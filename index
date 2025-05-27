@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Éditeur de formation drones</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  #grid {
+    display: grid;
+    grid-template-columns: repeat(10, 40px);
+    grid-template-rows: repeat(10, 40px);
+    gap: 2px;
+    margin-bottom: 20px;
+  }
+  .cell {
+    width: 40px; height: 40px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    background-color: #f0f0f0;
+  }
+  .cell.selected {
+    border: 2px solid black;
+  }
+  #colorPicker {
+    margin-bottom: 10px;
+  }
+  #droneList {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+  }
+  button {
+    padding: 8px 12px;
+    font-size: 1rem;
+  }
+  #output {
+    white-space: pre-wrap;
+    background: #eee;
+    padding: 10px;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h2>Éditeur de formation drones</h2>
+
+<label for="colorPicker">Choisis une couleur :</label>
+<select id="colorPicker">
+  <option value="#ff0000" style="color:#ff0000;">🔴 Rouge</option>
+  <option value="#0000ff" style="color:#0000ff;">🔵 Bleu</option>
+  <option value="#00ff00" style="color:#00ff00;">🟢 Vert</option>
+  <option value="#ffff00" style="color:#ffff00;">🟡 Jaune</option>
+  <option value="#ffa500" style="color:#ffa500;">🟠 Orange</option>
+  <option value="#800080" style="color:#800080;">🟣 Violet</option>
+  <option value="#00ffff" style="color:#00ffff;">🔷 Cyan</option>
+  <option value="#ffc0cb" style="color:#ffc0cb;">🌸 Rose</option>
+  <option value="#a52a2a" style="color:#a52a2a;">🟤 Marron</option>
+  <option value="#000000" style="color:#000000;">⚫ Noir</option>
+</select>
+
+<div id="grid"></div>
+
+<button id="exportBtn">Exporter la formation JSON</button>
+
+<h3>Drones sélectionnés :</h3>
+<div id="droneList">Aucun drone sélectionné.</div>
+
+<h3>JSON exporté :</h3>
+<pre id="output"></pre>
+
+<script>
+  const grid = document.getElementById('grid');
+  const colorPicker = document.getElementById('colorPicker');
+  const droneListDiv = document.getElementById('droneList');
+  const output = document.getElementById('output');
+
+  // Structure pour stocker les drones
+  // {x: int, y: int, color: string}
+  const drones = [];
+
+  // Créer la grille 10x10
+  for (let y = 0; y < 10; y++) {
+    for (let x = 0; x < 10; x++) {
+      const cell = document.createElement('div');
+      cell.classList.add('cell');
+      cell.dataset.x = x;
+      cell.dataset.y = y;
+
+      cell.addEventListener('click', () => {
+        const existingIndex = drones.findIndex(d => d.x === x && d.y === y);
+        if (existingIndex >= 0) {
+          // Retirer drone existant
+          drones.splice(existingIndex, 1);
+          cell.style.backgroundColor = '#f0f0f0';
+        } else {
+          // Ajouter drone
+          const color = colorPicker.value;
+          drones.push({x, y, color});
+          cell.style.backgroundColor = color;
+        }
+        updateDroneList();
+      });
+
+      grid.appendChild(cell);
+    }
+  }
+
+  function updateDroneList() {
+    if (drones.length === 0) {
+      droneListDiv.textContent = "Aucun drone sélectionné.";
+      output.textContent = '';
+      return;
+    }
+
+    droneListDiv.innerHTML = drones.map(d =>
+      `Drone en (${d.x}, ${d.y}) avec couleur ${d.color}`
+    ).join('<br>');
+  }
+
+  document.getElementById('exportBtn').addEventListener('click', () => {
+    if (drones.length === 0) {
+      output.textContent = "Aucun drone à exporter.";
+      return;
+    }
+    const json = JSON.stringify(drones, null, 2);
+    output.textContent = json;
+  });
+</script>
+
+</body>
+</html>
