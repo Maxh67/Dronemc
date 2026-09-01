@@ -18,43 +18,44 @@
     --thrill: #ff6b5e;
     --family: #6ea8ff;
     --food: #ffc857;
+    --mech: #7dd3fc;
+    --host: #c084fc;
     --warn: #f87171;
     --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; }
-  /* .chip/.card posent leur propre display : il doit rester battu par [hidden] */
+  /* .chip / .tabbtn posent leur propre display : il doit rester battu par [hidden] */
   [hidden] { display: none !important; }
   html, body { height: 100%; }
   body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--text);
+    margin: 0; background: var(--bg); color: var(--text);
     font: 13px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
   #app { display: flex; flex-direction: column; height: 100vh; }
 
   header {
-    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-    padding: 10px 16px; border-bottom: 1px solid var(--line);
-    background: var(--panel);
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+    padding: 9px 14px; border-bottom: 1px solid var(--line); background: var(--panel);
   }
-  header h1 { margin: 0; font-size: 14px; font-weight: 650; letter-spacing: .2px; white-space: nowrap; }
+  header h1 { margin: 0; font-size: 14px; font-weight: 650; white-space: nowrap; }
   header h1 span { color: var(--muted); font-weight: 400; }
-  #hud { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
+  #hud { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
   .chip {
     display: flex; align-items: baseline; gap: 6px;
     background: var(--panel-2); border: 1px solid var(--line);
-    border-radius: 6px; padding: 4px 9px;
+    border-radius: 6px; padding: 3px 8px;
   }
-  .chip .k { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .6px; }
-  .chip .v { font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; }
+  .chip .k { color: var(--muted); font-size: 9.5px; text-transform: uppercase; letter-spacing: .6px; }
+  .chip .v { font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
   .chip.money .v { color: var(--accent); }
   .chip.money.neg .v { color: var(--warn); }
   .chip.weather.rain .v { color: #7dd3fc; }
   .chip.weather.sun .v { color: var(--food); }
   .chip.promo { border-color: #4b7a63; background: #1b2a24; }
   .chip.promo .v { color: var(--accent); }
+  .chip.alert { border-color: #6b3535; background: #2a1c1c; }
+  .chip.alert .v { color: var(--warn); }
 
   main { flex: 1; display: flex; min-height: 0; }
   #stage { position: relative; flex: 1; min-width: 0; background: #0b0f14; }
@@ -78,25 +79,32 @@
   #legend .row { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11px; }
   #legend .dot { width: 8px; height: 8px; border-radius: 50%; }
 
-  aside {
-    width: 348px; flex: 0 0 348px; border-left: 1px solid var(--line);
-    background: var(--panel); overflow-y: auto; padding: 12px;
-    display: flex; flex-direction: column; gap: 12px;
+  aside { width: 356px; flex: 0 0 356px; border-left: 1px solid var(--line);
+          background: var(--panel); display: flex; flex-direction: column; min-height: 0; }
+  #tabs { display: flex; gap: 4px; padding: 8px 10px 0; border-bottom: 1px solid var(--line); }
+  .tabbtn {
+    flex: 1; display: block; padding: 6px 4px; font: inherit; font-size: 11.5px;
+    color: var(--muted); background: none; border: 0; border-bottom: 2px solid transparent;
+    cursor: pointer; border-radius: 0;
   }
+  .tabbtn:hover { color: var(--text); }
+  .tabbtn.active { color: var(--text); border-bottom-color: var(--accent); }
+  .panes { flex: 1; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 12px; }
+  .pane { display: flex; flex-direction: column; gap: 12px; }
+
   .card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
   .card > h2 {
-    margin: 0 0 8px; font-size: 10px; text-transform: uppercase;
-    letter-spacing: .8px; color: var(--muted); font-weight: 600;
+    margin: 0 0 8px; font-size: 10px; text-transform: uppercase; letter-spacing: .8px;
+    color: var(--muted); font-weight: 600;
     display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
   }
   .card > h2 em { font-style: normal; color: var(--dim); text-transform: none; letter-spacing: 0; font-weight: 400; }
-  .card.focus { border-color: #3c4a5e; box-shadow: 0 0 0 1px #232d3a inset; }
+  .card.focus { border-color: #3c4a5e; }
 
   .btnrow { display: flex; gap: 6px; flex-wrap: wrap; }
   button {
     font: inherit; color: var(--text); background: var(--panel-3);
-    border: 1px solid var(--line); border-radius: 6px;
-    padding: 6px 10px; cursor: pointer;
+    border: 1px solid var(--line); border-radius: 6px; padding: 6px 10px; cursor: pointer;
   }
   button:hover:not(:disabled) { background: #2b3542; }
   button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
@@ -106,6 +114,7 @@
   button.danger { border-color: #5d3232; color: #ffbdbd; }
   button.danger:hover:not(:disabled) { background: #3a2424; }
   button.wide { flex: 1; }
+  button.alert { border-color: #7a4a2a; color: #ffd8b0; background: #2e2118; }
 
   .group-label {
     color: var(--dim); font-size: 9.5px; text-transform: uppercase;
@@ -120,28 +129,26 @@
   .roofed { color: #a9b7c9; font-size: 10px; }
 
   table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
-  th { color: var(--muted); font-weight: 500; text-align: right; padding: 2px 3px; font-size: 10px;
-       text-transform: uppercase; letter-spacing: .4px; }
+  th { color: var(--muted); font-weight: 500; text-align: right; padding: 2px 3px;
+       font-size: 9.5px; text-transform: uppercase; letter-spacing: .4px; }
   th:first-child { text-align: left; }
   td { padding: 3px; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
   td:first-child { text-align: left; font-family: inherit; }
   tbody tr { border-top: 1px solid var(--line); cursor: pointer; }
   tbody tr:hover { background: #1f2833; }
   tbody tr.sel { background: #222c39; }
+  tbody tr.broken td { color: #ffb4b4; }
   .nametd { display: flex; align-items: center; gap: 6px; }
   .nametd .sw { width: 8px; height: 8px; border-radius: 2px; flex: 0 0 8px; }
-  .nametd .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 104px; }
+  .nametd .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; }
   .bar { position: relative; height: 4px; background: #2a323f; border-radius: 2px; overflow: hidden; min-width: 34px; }
   .bar > i { position: absolute; inset: 0 auto 0 0; }
 
-  /* --- inspecteur d'attraction --- */
-  #inspector .insp-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-  #inspector .insp-head .sw { width: 12px; height: 12px; border-radius: 3px; flex: 0 0 12px; }
-  #inspector .insp-head .nm { font-weight: 650; font-size: 13.5px; }
-  #inspector .insp-head .tag {
-    margin-left: auto; font-size: 10px; color: var(--muted);
-    border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px;
-  }
+  .insp-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .insp-head .sw { width: 12px; height: 12px; border-radius: 3px; flex: 0 0 12px; }
+  .insp-head .nm { font-weight: 650; font-size: 13.5px; }
+  .insp-head .tag { margin-left: auto; font-size: 10px; color: var(--muted);
+                    border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px; }
   .insp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 10px; margin-bottom: 9px; }
   .insp-grid .cell { display: flex; flex-direction: column; gap: 1px; }
   .insp-grid .lb { color: var(--dim); font-size: 9.5px; text-transform: uppercase; letter-spacing: .5px; }
@@ -151,59 +158,72 @@
   .insp-act .line > .t { flex: 1; color: var(--muted); font-size: 11.5px; }
   .insp-act .line > .t small { display: block; color: var(--dim); font-size: 10px; }
 
-  /* --- objectifs --- */
+  .meter { display: flex; align-items: center; gap: 6px; }
+  .meter .bar { flex: 1; height: 5px; }
+  .meter .n { font-family: var(--mono); font-size: 10.5px; color: var(--muted); min-width: 30px; text-align: right; }
+
+  .breakdown { width: 100%; font-size: 10.5px; }
+  .breakdown td { padding: 1.5px 3px; }
+  .breakdown td:first-child { color: var(--muted); font-family: inherit; }
+  .breakdown tr.win td { color: var(--accent); }
+  .breakdown tr.total td { border-top: 1px solid var(--line); }
+  .breakdown tr.out td { color: var(--dim); }
+
   #goals { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
   #goals li { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--muted); }
-  #goals li .mk {
-    width: 13px; height: 13px; border-radius: 4px; border: 1px solid var(--line);
-    flex: 0 0 13px; display: grid; place-items: center; font-size: 9px; color: transparent;
-  }
+  #goals li .mk { width: 13px; height: 13px; border-radius: 4px; border: 1px solid var(--line);
+                  flex: 0 0 13px; display: grid; place-items: center; font-size: 9px; color: transparent; }
   #goals li.done { color: var(--text); }
   #goals li.done .mk { background: #2f5d4b; border-color: var(--accent); color: #d6fff0; }
 
-  label.field { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  label.field { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px; }
+  label.field:last-child { margin-bottom: 0; }
   label.field .lb { color: var(--muted); font-size: 11px; }
   select, input[type=number] {
     font: inherit; background: var(--panel-3); color: var(--text);
     border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px;
   }
-  input[type=number] { width: 74px; font-family: var(--mono); text-align: right; }
+  input[type=number] { width: 76px; font-family: var(--mono); text-align: right; }
   input[type=checkbox] { accent-color: var(--accent); }
   .checkrow { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11.5px; margin-top: 8px; }
-
-  details.tuning summary {
-    cursor: pointer; color: var(--muted); font-size: 10px; text-transform: uppercase;
-    letter-spacing: .8px; font-weight: 600; list-style: none;
+  textarea {
+    width: 100%; height: 110px; font: 10.5px/1.4 var(--mono); resize: vertical;
+    background: #12171f; color: var(--muted); border: 1px solid var(--line);
+    border-radius: 5px; padding: 6px; margin-top: 8px;
   }
-  details.tuning summary::before { content: "▸ "; }
-  details.tuning[open] summary::before { content: "▾ "; }
-  .tunegrid { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; margin-top: 8px; align-items: center; }
+
+  .tunegroup { color: var(--dim); font-size: 9.5px; text-transform: uppercase;
+               letter-spacing: .7px; font-weight: 600; margin: 10px 0 2px; grid-column: 1 / -1; }
+  .tunegroup:first-child { margin-top: 0; }
+  .tunegrid { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; align-items: center; }
   .tunegrid .lb { color: var(--muted); font-size: 11px; }
   .tunegrid .lb small { display: block; color: var(--dim); font-size: 9.5px; font-family: var(--mono); }
 
-  #chart { width: 100%; height: 96px; display: block; border-radius: 5px; background: #12171f; }
+  #chart { width: 100%; height: 100px; display: block; border-radius: 5px; background: #12171f; }
   .chartkey { display: flex; gap: 10px; margin-top: 6px; color: var(--muted); font-size: 10.5px; flex-wrap: wrap; }
   .chartkey i { display: inline-block; width: 8px; height: 2px; vertical-align: middle; margin-right: 4px; }
 
-  #log { max-height: 130px; overflow-y: auto; font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
+  .progress { height: 4px; background: #2a323f; border-radius: 2px; overflow: hidden; margin-top: 8px; }
+  .progress > i { display: block; height: 100%; background: var(--accent); width: 0; }
+
+  #log { max-height: 150px; overflow-y: auto; font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
   #log div { padding: 1px 0; border-bottom: 1px solid #1c222b; }
   #log b { color: var(--text); font-weight: 500; }
   #log .t { color: var(--dim); }
 
   .note { color: var(--muted); font-size: 11px; margin: 7px 0 0; }
   .note b { color: var(--text); font-weight: 500; }
-  kbd {
-    font-family: var(--mono); font-size: 10px; background: var(--panel-3);
-    border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px;
-  }
+  .note:first-child { margin-top: 0; }
+  kbd { font-family: var(--mono); font-size: 10px; background: var(--panel-3);
+        border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px; }
 
-  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
   @media (max-width: 900px) {
     #legend { padding: 5px 7px; gap: 1px; }
     #legend .row { font-size: 10px; }
     #overlayHint { font-size: 10.5px; padding: 5px 8px; max-width: 80%; }
     main { flex-direction: column; }
-    #stage { min-height: 52vh; }
+    #stage { min-height: 50vh; }
     aside { width: auto; flex: 1 1 auto; border-left: 0; border-top: 1px solid var(--line); }
   }
 </style>
@@ -219,8 +239,9 @@
       <div class="chip"><span class="k">Tick</span><span class="v" id="hudTick">0</span></div>
       <div class="chip"><span class="k" id="hudNetK">Net/tick</span><span class="v" id="hudNet">0</span></div>
       <div class="chip"><span class="k">Satisf.</span><span class="v" id="hudSat">—</span></div>
-      <div class="chip"><span class="k">Popul.</span><span class="v" id="hudPop">—</span></div>
+      <div class="chip" id="hudRepChip" hidden><span class="k">Réputation</span><span class="v" id="hudRep">—</span></div>
       <div class="chip promo" id="hudPromo" hidden><span class="k">Campagne</span><span class="v" id="hudPromoV">0</span></div>
+      <div class="chip alert" id="hudBroken" hidden><span class="k">Pannes</span><span class="v" id="hudBrokenV">0</span></div>
     </div>
   </header>
 
@@ -232,99 +253,164 @@
     </section>
 
     <aside>
-      <div class="card">
-        <h2>Règles du bac à sable</h2>
-        <div class="btnrow" id="presetRow"></div>
-        <p class="note" id="presetNote"></p>
+      <div id="tabs">
+        <button class="tabbtn active" data-tab="park">Parc</button>
+        <button class="tabbtn" data-tab="analyse">Analyse</button>
+        <button class="tabbtn" data-tab="reglages">Réglages</button>
       </div>
+      <div class="panes">
 
-      <div class="card">
-        <h2>Vitesse</h2>
-        <div class="btnrow" id="speedRow"></div>
-        <p class="note"><kbd>espace</kbd> pause · <kbd>1</kbd>…<kbd>8</kbd> construire · <kbd>échap</kbd> annuler · glissez une attraction pour la déplacer</p>
-      </div>
-
-      <div class="card">
-        <h2>Construire <em>puis cliquez sur le parc</em></h2>
-        <div id="buildRow"></div>
-        <div class="checkrow">
-          <input type="checkbox" id="showLinks" checked />
-          <label for="showLinks">Afficher les liens de proximité (rayon 8 u.)</label>
-        </div>
-      </div>
-
-      <div class="card focus" id="inspector" hidden></div>
-
-      <div class="card">
-        <h2>Direction du parc</h2>
-        <div class="btnrow">
-          <button id="marketingBtn" class="wide">Lancer une campagne</button>
-        </div>
-        <p class="note" id="marketingNote"></p>
-      </div>
-
-      <div class="card">
-        <h2>Attractions</h2>
-        <table id="attrTable">
-          <thead><tr><th>Nom</th><th>File</th><th>Dessus</th><th>Popul.</th><th>Rev/t</th></tr></thead>
-          <tbody></tbody>
-        </table>
-        <p class="note" id="attrNote"></p>
-      </div>
-
-      <div class="card">
-        <h2>Objectifs</h2>
-        <ul id="goals"></ul>
-      </div>
-
-      <div class="card">
-        <h2>Historique</h2>
-        <canvas id="chart"></canvas>
-        <div class="chartkey">
-          <span><i style="background:#38bdf8"></i>visiteurs</span>
-          <span><i style="background:#6ee7b7"></i>net/tick</span>
-          <span><i style="background:#ffc857"></i>satisfaction</span>
-          <span><i style="background:#3b4f63"></i>pluie</span>
-        </div>
-      </div>
-
-      <div class="card">
-        <h2>Affichage</h2>
-        <label class="field">
-          <span class="lb">Couleur des visiteurs</span>
-          <select id="dotMode">
-            <option value="state">état</option>
-            <option value="trait">trait</option>
-            <option value="satisfaction">satisfaction</option>
-          </select>
-        </label>
-      </div>
-
-      <div class="card">
-        <h2>Simulation</h2>
-        <label class="field">
-          <span class="lb">Graine aléatoire</span>
-          <input type="number" id="seed" value="1337" step="1" />
-        </label>
-        <div class="btnrow" style="margin-top:8px">
-          <button id="resetBtn">Réinitialiser le parc</button>
-          <button id="forceWeather">Forcer la pluie</button>
-        </div>
-      </div>
-
-      <div class="card">
-        <details class="tuning">
-          <summary>Réglages d'équilibrage</summary>
-          <div class="tunegrid" id="tuneGrid"></div>
-          <div class="btnrow" style="margin-top:10px">
-            <button id="tuneReset" class="mini">Revenir aux valeurs de la spec</button>
+        <!-- ================= PARC ================= -->
+        <div class="pane" data-pane="park">
+          <div class="card">
+            <h2>Modèle de simulation</h2>
+            <div class="btnrow" id="presetRow"></div>
+            <p class="note" id="presetNote"></p>
           </div>
-        </details>
-      </div>
 
-      <div class="card">
-        <h2>Journal</h2>
-        <div id="log"></div>
+          <div class="card">
+            <h2>Vitesse</h2>
+            <div class="btnrow" id="speedRow"></div>
+            <p class="note"><kbd>espace</kbd> pause · <kbd>1</kbd>…<kbd>8</kbd> construire · <kbd>M</kbd>/<kbd>A</kbd> personnel · <kbd>échap</kbd> annuler · glissez pour déplacer</p>
+          </div>
+
+          <div class="card focus" id="inspector" hidden></div>
+
+          <div class="card">
+            <h2>Construire <em>puis cliquez sur le parc</em></h2>
+            <div id="buildRow"></div>
+          </div>
+
+          <div class="card">
+            <h2>Personnel <em id="staffCount"></em></h2>
+            <div id="staffRow"></div>
+            <p class="note" id="staffNote"></p>
+          </div>
+
+          <div class="card">
+            <h2>Direction du parc</h2>
+            <div class="btnrow">
+              <button id="marketingBtn" class="wide">Lancer une campagne</button>
+            </div>
+            <p class="note" id="marketingNote"></p>
+          </div>
+
+          <div class="card">
+            <h2>Attractions</h2>
+            <table id="attrTable">
+              <thead><tr><th>Nom</th><th>File</th><th>Dessus</th><th>Popul.</th><th>Usure</th><th>Rev/t</th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <p class="note" id="attrNote"></p>
+          </div>
+
+          <div class="card">
+            <h2>Objectifs</h2>
+            <ul id="goals"></ul>
+          </div>
+        </div>
+
+        <!-- ================= ANALYSE ================= -->
+        <div class="pane" data-pane="analyse" hidden>
+          <div class="card">
+            <h2>Historique</h2>
+            <canvas id="chart"></canvas>
+            <div class="chartkey">
+              <span><i style="background:#38bdf8"></i>visiteurs</span>
+              <span><i style="background:#6ee7b7"></i>net/tick</span>
+              <span><i style="background:#ffc857"></i>satisfaction</span>
+              <span><i style="background:#3b4f63"></i>pluie</span>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Pourquoi les visiteurs partent</h2>
+            <table id="departTable"><tbody></tbody></table>
+            <p class="note" id="departNote"></p>
+          </div>
+
+          <div class="card">
+            <h2>Calques de la vue</h2>
+            <label class="field"><span class="lb">Couleur des visiteurs</span>
+              <select id="dotMode">
+                <option value="state">état</option>
+                <option value="trait">trait</option>
+                <option value="satisfaction">satisfaction</option>
+                <option value="wallet">porte-monnaie</option>
+                <option value="hunger">faim</option>
+              </select>
+            </label>
+            <div class="checkrow"><input type="checkbox" id="showLinks" checked />
+              <label for="showLinks">Liens de proximité (rayon des stands)</label></div>
+            <div class="checkrow"><input type="checkbox" id="showHeat" />
+              <label for="showHeat">Carte de chaleur (temps passé par zone)</label></div>
+            <div class="checkrow"><input type="checkbox" id="showStaffRange" checked />
+              <label for="showStaffRange">Rayon d’action du personnel</label></div>
+            <div class="btnrow" style="margin-top:9px">
+              <button id="followBtn" class="mini">Suivre un visiteur au hasard</button>
+              <button id="heatReset" class="mini">Effacer la chaleur</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Runs par lot <em>sans toucher au parc</em></h2>
+            <label class="field"><span class="lb">Nombre de runs</span>
+              <input type="number" id="batchRuns" value="12" min="1" max="60" step="1" /></label>
+            <label class="field"><span class="lb">Ticks par run</span>
+              <input type="number" id="batchTicks" value="400" min="50" max="4000" step="50" /></label>
+            <div class="btnrow" style="margin-top:8px">
+              <button id="batchBtn" class="wide">Lancer le lot</button>
+            </div>
+            <div class="progress" id="batchProgress" hidden><i></i></div>
+            <table id="batchTable" hidden>
+              <thead><tr><th>Mesure</th><th>Moy.</th><th>Min</th><th>Max</th></tr></thead>
+              <tbody></tbody>
+            </table>
+            <p class="note" id="batchNote">Rejoue le parc depuis zéro avec les réglages actuels, sur des graines successives. Le parc affiché n’est pas modifié.</p>
+          </div>
+
+          <div class="card">
+            <h2>Export</h2>
+            <div class="btnrow">
+              <button id="csvBtn" class="mini">Générer le CSV de l’historique</button>
+              <button id="csvCopy" class="mini" hidden>Copier</button>
+            </div>
+            <textarea id="csvOut" hidden readonly></textarea>
+          </div>
+        </div>
+
+        <!-- ================= RÉGLAGES ================= -->
+        <div class="pane" data-pane="reglages" hidden>
+          <div class="card">
+            <h2>Simulation</h2>
+            <label class="field"><span class="lb">Graine aléatoire</span>
+              <input type="number" id="seed" value="1337" step="1" /></label>
+            <div class="btnrow" style="margin-top:8px">
+              <button id="resetBtn">Réinitialiser</button>
+              <button id="forceWeather">Forcer la pluie</button>
+            </div>
+            <div class="btnrow" style="margin-top:6px">
+              <button id="saveBtn" class="mini">Sauvegarder</button>
+              <button id="loadBtn" class="mini">Charger</button>
+              <button id="clearSaveBtn" class="mini">Effacer</button>
+            </div>
+            <p class="note" id="saveNote"></p>
+          </div>
+
+          <div class="card">
+            <h2>Réglages d'équilibrage</h2>
+            <div class="tunegrid" id="tuneGrid"></div>
+            <div class="btnrow" style="margin-top:10px">
+              <button id="tuneReset" class="mini">Revenir au modèle « Spec pure »</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>Journal</h2>
+            <div id="log"></div>
+          </div>
+        </div>
+
       </div>
     </aside>
   </main>
@@ -334,73 +420,98 @@
 "use strict";
 /* =============================================================================
    Park Tycoon — prototype de playtest (fichier autonome, aucune dépendance).
-   Objectif : valider l'équilibrage de la simulation, pas le rendu.
 
    Où trouver chaque règle de la spec (pour le portage Swift) :
      traits & tolérances de file ......... TRAITS
      attractions & prix .................. BLUEPRINTS, initState()
-     choix de destination ................ destinationScore() / chooseDestination()
-     satisfaction (cible + glissement) ... satisfactionTarget() + bloc « Satisfaction » de tick()
-     économie & bonus de proximité ....... étape 4 de tick()
-     popularité (bouche-à-oreille) ....... étape 5 de tick()
-     météo ............................... étape 6 de tick()
+     choix de destination ................ scoreBreakdown() / chooseDestination()
+     satisfaction (cible + glissement) ... satisfactionTarget() + étape 4 de tick()
+     économie & bonus de proximité ....... étape 5 de tick()
+     popularité (bouche-à-oreille) ....... étape 6 de tick()
+     météo ............................... étape 7 de tick()
      boucle (spawn → agir → files → …) ... tick()
 
-   Deux jeux de règles, commutables dans le panneau « Règles du bac à sable » :
-     · Spec pure — strictement les règles ci-dessus, rien d'autre.
-     · Jouable   — ajoute entretien, sensibilité au prix et durée de visite, pour
-                   que les décisions du joueur aient des conséquences.
-   Les extensions sont toutes dans EXTENSIONS et marquées « hors spec ».
+   Trois modèles commutables (bouton en haut du panneau) :
+     · Spec pure — strictement les règles ci-dessus, toutes les extensions à 0.
+     · Jouable   — + entretien, sensibilité au prix, durée de visite.
+     · Complet   — + porte-monnaie, faim, énergie, pannes, personnel, réputation.
+   Chaque extension est neutre à 0 : « Spec pure » reproduit le modèle d'origine
+   au chiffre près, ce qui reste la référence vérifiable.
    ========================================================================== */
 
-/* ---------- Règles chiffrées (valeurs de la spec) -------------------------- */
+/* ---------- Règles chiffrées ---------------------------------------------- */
 const SPEC = {
-  spawnBase:                0.35,  // P(spawn) = spawnBase * (0.5 + popularité moyenne)
+  // --- spec d'origine ---
+  spawnBase:                0.35,
   maxVisitors:              60,
-  scoreThreshold:           0.15,  // en dessous : le visiteur erre puis part
-  queueScorePenalty:        0.08,  // par visiteur au-delà de la tolérance de file
-  rainScorePenalty:         0.30,  // pluie + attraction extérieure
-  distancePenalty:          0.01,  // par unité de distance
-  queueSatisfactionPenalty: 0.04,  // par visiteur au-delà de la tolérance
+  scoreThreshold:           0.15,
+  queueScorePenalty:        0.08,
+  rainScorePenalty:         0.30,
+  distancePenalty:          0.01,
+  queueSatisfactionPenalty: 0.04,
   rainSatisfactionPenalty:  0.20,
-  satisfactionLerp:         0.25,  // glissement vers la cible, par tick
-  popularityDrift:          0.02,  // bouche-à-oreille, par tick
-  foodBonusRate:            0.15,  // × somme des files non-food proches
-  foodBonusRadius:          8,     // unités
-  rainRevenueMultiplier:    0.60,  // extérieur sous la pluie
-  weatherChangeTicks:       40,    // changement ~toutes les N ticks
+  satisfactionLerp:         0.25,
+  popularityDrift:          0.02,
+  foodBonusRate:            0.15,
+  foodBonusRadius:          8,
+  rainRevenueMultiplier:    0.60,
+  weatherChangeTicks:       40,
   startingMoney:            10000,
-  // la spec dit « erre puis part » sans chiffrer : combien de ticks d'errance
-  wanderPatience:           5,
-  // extensions, neutres par défaut (voir PRESETS)
-  upkeepMultiplier:         0,     // hors spec : entretien par tick
-  priceSensitivity:         0,     // hors spec : pénalité par € au-dessus du prix de base
-  maxVisitDuration:         0,     // hors spec : 0 = visite illimitée
-  marketingBoost:           1.8,   // hors spec : multiplicateur de spawn pendant une campagne
+  wanderPatience:           5,     // la spec dit « erre puis part » sans chiffrer
+  // --- extensions, neutres à 0 ---
+  upkeepMultiplier:         0,
+  priceSensitivity:         0,
+  maxVisitDuration:         0,
+  marketingBoost:           1.8,
   marketingDuration:        60,
   marketingCost:            1500,
+  walletBase:               0,     // 0 = porte-monnaie illimité
+  hungerRate:               0,     // faim gagnée par tick
+  hungerWeight:             0.60,  // poids de la faim dans l'affinité « food »
+  hungerPenalty:            0.50,  // satisfaction perdue quand la faim dépasse 0.6
+  energyDrain:              0,     // énergie perdue par tick
+  energyFromFood:           0.18,
+  breakdownRate:            0,     // probabilité de panne par tick et par unité d'usure
+  breakdownPopularityHit:   0.05,
+  repairTicks:              4,     // durée de réparation par un mécanicien
+  wearPerRide:              0.010, // usure par visiteur servi, rapportée à la capacité
+  reputationDrift:          0,     // 0 = la réputation n'influence pas le spawn
+  entertainBoost:           0,     // satisfaction rendue par un animateur, par tick
+  entertainRadius:          9,
+  staffSalary:              1.0,   // multiplicateur des salaires
 };
 const CONFIG = Object.assign({}, SPEC);
 
 const PRESETS = {
   spec: {
     label: 'Spec pure',
-    note: 'Strictement les règles de la spec. Le parc sature à ' +
-          '<b>60 visiteurs</b> et personne ne repart : les leviers économiques ' +
-          'deviennent inertes, mais les formules sont vérifiables telles quelles.',
-    config: { upkeepMultiplier: 0, priceSensitivity: 0, maxVisitDuration: 0 },
+    config: { upkeepMultiplier: 0, priceSensitivity: 0, maxVisitDuration: 0, walletBase: 0,
+              hungerRate: 0, energyDrain: 0, breakdownRate: 0, reputationDrift: 0, entertainBoost: 0 },
+    note: 'Strictement les règles de la spec. Le parc sature à <b>60 visiteurs</b> ' +
+          'et presque personne ne repart, mais les formules sont vérifiables telles quelles.',
   },
   play: {
     label: 'Jouable',
-    note: 'Ajoute trois règles <b>hors spec</b> : entretien par tick, prix qui ' +
-          'compte dans le choix des visiteurs, et durée de visite (140 ticks) ' +
-          'pour créer du renouvellement. C\'est le mode où vos décisions pèsent.',
-    config: { upkeepMultiplier: 1, priceSensitivity: 0.04, maxVisitDuration: 140 },
+    config: { upkeepMultiplier: 1, priceSensitivity: 0.04, maxVisitDuration: 140, walletBase: 0,
+              hungerRate: 0, energyDrain: 0, breakdownRate: 0, reputationDrift: 0, entertainBoost: 0 },
+    note: 'Ajoute <b>entretien</b>, <b>prix qui compte</b> dans le choix des visiteurs et ' +
+          '<b>durée de visite</b> (140 ticks) pour créer du renouvellement.',
+  },
+  full: {
+    label: 'Complet',
+    config: { upkeepMultiplier: 1, priceSensitivity: 0.04, maxVisitDuration: 0, walletBase: 120,
+              hungerRate: 0.012, energyDrain: 0.008, breakdownRate: 0.008, reputationDrift: 0.05,
+              entertainBoost: 0.04 },
+    note: 'Les visiteurs ont un <b>porte-monnaie</b>, de la <b>faim</b> et de l’<b>énergie</b> : ' +
+          'ils repartent d’eux-mêmes, et les stands deviennent nécessaires. ' +
+          'Les attractions <b>tombent en panne</b>, le <b>personnel</b> sert à quelque chose, ' +
+          'et la <b>réputation</b> pilote les arrivées.',
   },
 };
-let presetKey = 'play';
+let presetKey = 'full';
 
 const TUNABLES = [
+  ['#', 'Spec d’origine'],
   ['spawnBase',                'Spawn (base)',            0.01, '0.35'],
   ['maxVisitors',              'Visiteurs max',           1,    '60'],
   ['scoreThreshold',           'Seuil d’attirance',       0.01, '0.15'],
@@ -416,12 +527,29 @@ const TUNABLES = [
   ['rainRevenueMultiplier',    'Revenu pluie (ext.)',     0.05, '×0.6'],
   ['weatherChangeTicks',       'Météo — période',         5,    '~40 ticks'],
   ['wanderPatience',           'Patience errance',        1,    '5 ticks'],
-  ['upkeepMultiplier',         'Entretien',               0.25, 'hors spec · 0 = aucun'],
-  ['priceSensitivity',         'Sensibilité au prix',     0.01, 'hors spec · 0 = aucune'],
-  ['maxVisitDuration',         'Durée de visite max',     10,   'hors spec · 0 = illimitée'],
-  ['marketingBoost',           'Boost campagne',          0.1,  'hors spec · ×1.8'],
-  ['marketingDuration',        'Durée campagne',          10,   'hors spec · 60 ticks'],
-  ['marketingCost',            'Coût campagne',           100,  'hors spec · 1 500 €'],
+  ['#', 'Économie du parc'],
+  ['upkeepMultiplier',         'Entretien',               0.25, '0 = aucun'],
+  ['priceSensitivity',         'Sensibilité au prix',     0.01, '0 = aucune'],
+  ['staffSalary',              'Salaires (×)',            0.25, '×1'],
+  ['marketingBoost',           'Boost campagne',          0.1,  '×1.8'],
+  ['marketingDuration',        'Durée campagne',          10,   '60 ticks'],
+  ['marketingCost',            'Coût campagne',           100,  '1 500 €'],
+  ['#', 'Visiteurs'],
+  ['maxVisitDuration',         'Durée de visite max',     10,   '0 = illimitée'],
+  ['walletBase',               'Porte-monnaie',           5,    '0 = illimité'],
+  ['hungerRate',               'Faim / tick',             0.002,'0 = pas de faim'],
+  ['hungerWeight',             'Poids de la faim',        0.05, '+0.6 d’affinité food'],
+  ['hungerPenalty',            'Faim → satisfaction',     0.05, '0.5'],
+  ['energyDrain',              'Énergie / tick',          0.002,'0 = infatigable'],
+  ['energyFromFood',           'Énergie rendue',          0.02, '+0.18'],
+  ['reputationDrift',          'Dérive réputation',       0.01, '0 = désactivée'],
+  ['#', 'Exploitation'],
+  ['breakdownRate',            'Taux de panne',           0.005,'0 = jamais'],
+  ['wearPerRide',              'Usure / visiteur',        0.002,'0.010'],
+  ['repairTicks',              'Durée de réparation',     1,    '4 ticks'],
+  ['breakdownPopularityHit',   'Panne → popularité',      0.01, '−0.05'],
+  ['entertainBoost',           'Boost animateur',         0.01, '0 = désactivé'],
+  ['entertainRadius',          'Rayon animateur',         1,    '9 unités'],
 ];
 
 /* ---------- Traits de visiteur -------------------------------------------- */
@@ -429,17 +557,17 @@ const TRAITS = {
   sensationsFortes: {
     label: 'Sensations fortes',
     affinity: { thrill: 1.0, family: 0.3, food: 0.5 },
-    queueTolerance: 8, color: '#ff6b5e',
+    queueTolerance: 8, color: '#ff6b5e', wallet: 1.0,
   },
   familial: {
     label: 'Familial',
     affinity: { family: 1.0, thrill: 0.2, food: 0.6 },
-    queueTolerance: 3, color: '#6ea8ff',
+    queueTolerance: 3, color: '#6ea8ff', wallet: 1.25,
   },
   gourmand: {
     label: 'Gourmand',
     affinity: { food: 1.0, thrill: 0.4, family: 0.5 },
-    queueTolerance: 5, color: '#ffc857',
+    queueTolerance: 5, color: '#ffc857', wallet: 0.9,
   },
 };
 const TRAIT_KEYS = Object.keys(TRAITS);
@@ -447,6 +575,7 @@ const TRAIT_KEYS = Object.keys(TRAITS);
 /* ---------- Types d'attraction -------------------------------------------- */
 const CATEGORY_COLOR = { thrill: '#ff6b5e', family: '#6ea8ff', food: '#ffc857' };
 const CATEGORY_LABEL = { thrill: 'Sensations', family: 'Familial', food: 'Restauration' };
+const WEAR_FACTOR = { thrill: 1.6, family: 1.0, food: 0.4 };
 
 // `outdoor: false` = déjà couverte, donc insensible à la pluie (règle de la spec).
 const BLUEPRINTS = {
@@ -466,41 +595,64 @@ const BUILD_GROUPS = [
 ];
 const BLUEPRINT_KEYS = BUILD_GROUPS.flatMap((g) => g.keys);
 
-// Améliorations : coût dérivé du prix de construction.
 const UPGRADE = {
-  capacity: { label: 'Agrandir',  step: 2,    rate: 0.35, upkeepAdd: 0.20 },
-  roof:     { label: 'Couvrir',                rate: 0.60, upkeepAdd: 0.30 },
-  renovate: { label: 'Rénover',   bump: 0.20, rate: 0.25, upkeepAdd: 0 },
+  capacity: { step: 2,    rate: 0.35, upkeepAdd: 0.20 },
+  roof:     {             rate: 0.60, upkeepAdd: 0.30 },
+  renovate: { bump: 0.20, rate: 0.25, upkeepAdd: 0 },
+  service:  {             rate: 0.06, upkeepAdd: 0 },   // révision : remet l'usure à zéro
+  repair:   {             rate: 0.10, upkeepAdd: 0 },   // réparation immédiate
 };
 const upgradeCost = (a, kind) => Math.round(BLUEPRINTS[a.type].cost * UPGRADE[kind].rate);
+
+/* ---------- Personnel ----------------------------------------------------- */
+const STAFF_TYPES = {
+  mecanicien: { name: 'Mécanicien', color: '#7dd3fc', letter: 'M', cost: 800, salary: 3.0, key: 'm',
+                desc: 'Se déplace vers l’attraction en panne la plus proche et la répare.' },
+  animateur:  { name: 'Animateur',  color: '#c084fc', letter: 'A', cost: 600, salary: 2.2, key: 'a',
+                desc: 'Remonte la satisfaction des visiteurs dans son rayon — utile sur les grosses files.' },
+};
+const STAFF_KEYS = Object.keys(STAFF_TYPES);
 
 /* ---------- Monde --------------------------------------------------------- */
 const WORLD = { w: 100, h: 60, margin: 3 };
 const GATE = { x: 50, y: 57 };
-const SPEED = { travel: 9, wander: 4.5, leave: 11, queue: 5 };
+const SPEED = { travel: 9, wander: 4.5, leave: 11, queue: 5, staff: 7 };
+const HEAT = { w: 50, h: 30 };
+
+/* ---------- Raisons de départ --------------------------------------------- */
+const LEAVE_REASONS = {
+  rien:    'Rien d’assez attirant',
+  temps:   'Fin de visite',
+  argent:  'À court d’argent',
+  fatigue: 'Épuisé',
+};
 
 /* ---------- Objectifs ----------------------------------------------------- */
 const GOALS = [
-  { id: 'cats',   label: 'Les 3 catégories représentées',      test: (S) => new Set(S.attractions.map((a) => a.category)).size >= 3 },
-  { id: 'attr6',  label: '6 attractions dans le parc',         test: (S) => S.attractions.length >= 6 },
-  { id: 'roof',   label: 'Une attraction à l’abri de la pluie', test: (S) => S.attractions.some((a) => !a.outdoor) },
-  { id: 'full',   label: 'Parc plein',                         test: (S) => S.visitors.length >= CONFIG.maxVisitors },
-  { id: 'sat',    label: 'Satisfaction moyenne ≥ 0,80',        test: () => { const v = avgSatisfaction(); return v !== null && v >= 0.8; } },
-  { id: 'pop',    label: 'Popularité moyenne ≥ 0,85',          test: () => { const v = avgPopularity(); return v !== null && v >= 0.85; } },
-  { id: 'served', label: '2 000 tours servis',                 test: (S) => S.attractions.reduce((s, a) => s + a.served, 0) >= 2000 },
-  { id: 'money',  label: '40 000 € en caisse',                 test: (S) => S.money >= 40000 },
+  { id: 'cats',   label: 'Les 3 catégories représentées',       test: (S) => new Set(S.attractions.map((a) => a.category)).size >= 3 },
+  { id: 'attr6',  label: '6 attractions dans le parc',          test: (S) => S.attractions.length >= 6 },
+  { id: 'roof',   label: 'Une attraction à l’abri de la pluie',  test: (S) => S.attractions.some((a) => !a.outdoor) },
+  { id: 'staff',  label: 'Un mécanicien et un animateur',       test: (S) => STAFF_KEYS.every((k) => S.staff.some((s) => s.type === k)) },
+  { id: 'full',   label: 'Parc plein',                          test: (S) => S.visitors.length >= CONFIG.maxVisitors },
+  { id: 'sat',    label: 'Satisfaction moyenne ≥ 0,80',         test: () => { const v = avgSatisfaction(); return v !== null && v >= 0.8; } },
+  { id: 'served', label: '2 000 tours servis',                  test: (S) => S.attractions.reduce((s, a) => s + a.served, 0) >= 2000 },
+  { id: 'money',  label: '40 000 € en caisse',                  test: (S) => S.money >= 40000 },
 ];
 
-/* ---------- Aléatoire reproductible --------------------------------------- */
-function mulberry32(a) {
-  return function () {
-    a |= 0; a = (a + 0x6D2B79F5) | 0;
+/* ---------- Aléatoire reproductible (état sérialisable) ------------------- */
+function makeRng(seed) {
+  let a = seed | 0;
+  const f = () => {
+    a = (a + 0x6D2B79F5) | 0;
     let t = Math.imul(a ^ (a >>> 15), 1 | a);
     t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
+  f.getState = () => a;
+  f.setState = (v) => { a = v | 0; };
+  return f;
 }
-let rng = mulberry32(1337);
+let rng = makeRng(1337);
 
 /* ---------- Utilitaires --------------------------------------------------- */
 const clamp = (v, lo, hi) => (v < lo ? lo : v > hi ? hi : v);
@@ -510,10 +662,14 @@ const fmtMoney = (n) => Math.round(n).toLocaleString('fr-FR');
 const fmt1 = (n) => n.toFixed(1);
 const fmt2 = (n) => n.toFixed(2);
 const signed = (n) => (n >= 0 ? '+' : '−') + fmt1(Math.abs(n));
+const mean = (arr) => (arr.length ? arr.reduce((s, x) => s + x, 0) / arr.length : 0);
 
-/* ---------- État ---------------------------------------------------------- */
+/* =============================================================================
+   ÉTAT
+   ========================================================================== */
 let state = null;
 let nextId = 1;
+let quietSim = false;   // true pendant les runs par lot : aucun rendu
 
 function makeAttraction(typeKey, x, y) {
   const bp = BLUEPRINTS[typeKey];
@@ -523,49 +679,64 @@ function makeAttraction(typeKey, x, y) {
     capacity: bp.capacity, capacityBonus: 0,
     upkeep: bp.upkeep, radius: bp.radius, shape: bp.shape,
     x, y,
-    popularity: 0.5,      // démarre à 0.5
-    queue: 0,             // recalculée à chaque tick
-    riders: [],           // visiteurs « dessus » ce tick
+    popularity: 0.5,
+    queue: 0, riders: [],
+    wear: 0, broken: false, brokenAt: 0, repairProgress: 0, breakdowns: 0,
     lastRevenue: 0, totalRevenue: 0, served: 0, builtAt: 0, invested: bp.cost,
   };
 }
 
+function makeStaff(typeKey, x, y) {
+  const st = STAFF_TYPES[typeKey];
+  return {
+    id: nextId++, type: typeKey, x, y, px: x, py: y,
+    homeX: x, homeY: y, targetId: null, repairs: 0, wanderAngle: rng() * 6.28,
+    salary: st.salary, hiredAt: 0,
+  };
+}
+
 function initState(seedValue) {
-  rng = mulberry32(seedValue | 0);
+  rng = makeRng(seedValue | 0);
   nextId = 1;
   state = {
+    seed: seedValue | 0,
     money: CONFIG.startingMoney,
     ticks: 0,
-    weather: 'sun',
-    weatherLocked: false,
-    visitors: [],
-    attractions: [],
-    revenueThisTick: 0,
-    upkeepThisTick: 0,
-    totalRevenue: 0, totalUpkeep: 0,
+    weather: 'sun', weatherLocked: false,
+    visitors: [], attractions: [], staff: [],
+    revenueThisTick: 0, upkeepThisTick: 0, salaryThisTick: 0,
+    totalRevenue: 0, totalUpkeep: 0, totalSalary: 0,
     totalSpawned: 0, totalLeft: 0,
+    departures: { rien: 0, temps: 0, argent: 0, fatigue: 0 },
+    satisfactionOnExit: [],
+    reputation: 0.5,
     marketingTicks: 0,
+    breakdownsTotal: 0,
     wasBroke: false,
     goals: {},
-    history: [],
-    log: [],
-    selectedId: null,
+    heat: new Array(HEAT.w * HEAT.h).fill(0),
+    history: [], log: [],
+    selectedId: null, selectedVisitorId: null,
   };
-  // Attractions de départ : assez proches pour que la proximité économique joue
-  // (le stand voit les deux autres dans son rayon de 8 unités).
   state.attractions.push(makeAttraction('carrousel', 43, 32));
   state.attractions.push(makeAttraction('coaster',   57, 32));
   state.attractions.push(makeAttraction('food',      50, 35)); // à 7,6 u. des deux autres
-  logEvent('Parc initialisé — 3 attractions, ' + fmtMoney(state.money) + ' €');
+  // si les pannes sont actives, le parc démarre avec un mécanicien : sans lui une
+  // attraction en panne le reste pour toujours, et le parc se vide sans qu'on comprenne
+  if (CONFIG.breakdownRate > 0) state.staff.push(makeStaff('mecanicien', 50, 45));
+  logEvent('Parc initialisé — 3 attractions, ' + fmtMoney(state.money) + ' €' +
+           (state.staff.length ? ' et un mécanicien' : ''));
 }
 
 function logEvent(msg) {
   state.log.unshift({ t: state.ticks, msg });
-  if (state.log.length > 60) state.log.pop();
-  renderLog();
+  if (state.log.length > 80) state.log.pop();
+  if (!quietSim) renderLog();
 }
 
-/* ---------- Visiteurs ------------------------------------------------------ */
+/* =============================================================================
+   VISITEURS
+   ========================================================================== */
 function parkCentroid() {
   if (!state.attractions.length) return { x: WORLD.w / 2, y: WORLD.h / 2 };
   let sx = 0, sy = 0;
@@ -578,16 +749,17 @@ function spawnVisitor() {
   const c = parkCentroid();
   const v = {
     id: nextId++, trait,
-    x: GATE.x + (rng() - 0.5) * 4, y: GATE.y,
-    px: 0, py: 0,
+    x: GATE.x + (rng() - 0.5) * 4, y: GATE.y, px: 0, py: 0,
     satisfaction: 0.5,
-    mode: 'wandering',
-    targetId: null,
-    joinTick: 0,
-    failedSearches: 0,
-    rides: 0, spent: 0, bornTick: state.ticks,
-    slot: null,
-    // premier objectif d'errance : le cœur du parc, pour que le visiteur entre
+    wallet: CONFIG.walletBase > 0
+      ? CONFIG.walletBase * TRAITS[trait].wallet * (0.7 + rng() * 0.6) : Infinity,
+    spentTotal: 0,
+    // tirage conditionnel : sans faim active, le flux aléatoire reste celui de la
+    // spec d'origine, et « Spec pure » rejoue exactement les mêmes parties
+    hunger: CONFIG.hungerRate > 0 ? rng() * 0.2 : 0,
+    energy: 1,
+    mode: 'wandering', targetId: null, joinTick: 0, failedSearches: 0,
+    rides: 0, bornTick: state.ticks, slot: null, leaveReason: null,
     wander: { x: clamp(c.x + (rng() - 0.5) * 16, WORLD.margin, WORLD.w - WORLD.margin),
               y: clamp(c.y + (rng() - 0.5) * 12, WORLD.margin, WORLD.h - WORLD.margin) },
   };
@@ -601,23 +773,40 @@ function attractionById(id) {
   for (const a of state.attractions) if (a.id === id) return a;
   return null;
 }
+function visitorById(id) {
+  for (const v of state.visitors) if (v.id === id) return v;
+  return null;
+}
 
-/* Score de destination (spec) :
-   affinité × popularité
-   − 0.08 par visiteur en trop au-delà de la tolérance de file
-   − 0.3 si pluie et attraction extérieure
-   − 0.01 × distance
-   (hors spec, si activé) − priceSensitivity × (prix − prix de base)          */
-function destinationScore(v, a) {
+/* Décomposition du score de destination — sert au calcul ET à l'inspecteur.
+   Spec : affinité × popularité
+          − 0.08 par visiteur au-delà de la tolérance de file
+          − 0.3 si pluie et attraction extérieure
+          − 0.01 × distance
+   Extensions : affinité « food » relevée par la faim, pénalité de prix,
+                attraction écartée si en panne ou hors budget.              */
+function scoreBreakdown(v, a) {
   const trait = TRAITS[v.trait];
-  const aff = trait.affinity[a.category] || 0;
+  let aff = trait.affinity[a.category] || 0;
+  const hungerLift = (a.category === 'food' && CONFIG.hungerRate > 0)
+    ? clamp01(aff + CONFIG.hungerWeight * v.hunger) - aff : 0;
+  aff += hungerLift;
   const excess = Math.max(0, a.queue - trait.queueTolerance);
-  let s = aff * a.popularity;
-  s -= CONFIG.queueScorePenalty * excess;
-  if (state.weather === 'rain' && a.outdoor) s -= CONFIG.rainScorePenalty;
-  s -= CONFIG.distancePenalty * dist(v, a);
-  if (CONFIG.priceSensitivity) s -= CONFIG.priceSensitivity * (a.price - a.basePrice);
-  return s;
+  const base = aff * a.popularity;
+  const queuePen = -CONFIG.queueScorePenalty * excess;
+  const rainPen = (state.weather === 'rain' && a.outdoor) ? -CONFIG.rainScorePenalty : 0;
+  const distPen = -CONFIG.distancePenalty * dist(v, a);
+  const pricePen = CONFIG.priceSensitivity ? -CONFIG.priceSensitivity * (a.price - a.basePrice) : 0;
+  const affordable = v.wallet >= a.price;
+  const available = !a.broken;
+  const total = base + queuePen + rainPen + distPen + pricePen;
+  return { aff, hungerLift, base, queuePen, rainPen, distPen, pricePen, total,
+           affordable, available, eligible: affordable && available };
+}
+
+function destinationScore(v, a) {
+  const b = scoreBreakdown(v, a);
+  return b.eligible ? b.total : -Infinity;
 }
 
 function chooseDestination(v) {
@@ -631,7 +820,7 @@ function chooseDestination(v) {
 
 /* Cible de satisfaction (spec) :
    affinité − 0.04 × excès de file − 0.2 si pluie+extérieur, bornée [0,1].
-   La satisfaction glisse de 25 % vers cette cible à chaque tick.           */
+   Extensions : pénalité de prix et de faim non satisfaite.                 */
 function satisfactionTarget(v, a) {
   const trait = TRAITS[v.trait];
   const aff = trait.affinity[a.category] || 0;
@@ -639,14 +828,15 @@ function satisfactionTarget(v, a) {
   let t = aff - CONFIG.queueSatisfactionPenalty * excess;
   if (state.weather === 'rain' && a.outdoor) t -= CONFIG.rainSatisfactionPenalty;
   if (CONFIG.priceSensitivity) t -= CONFIG.priceSensitivity * (a.price - a.basePrice);
+  if (CONFIG.hungerRate > 0) t -= CONFIG.hungerPenalty * Math.max(0, v.hunger - 0.6);
   return clamp01(t);
 }
 
-function moveToward(v, tx, ty, speed) {
-  const dx = tx - v.x, dy = ty - v.y;
+function moveToward(o, tx, ty, speed) {
+  const dx = tx - o.x, dy = ty - o.y;
   const d = Math.hypot(dx, dy);
-  if (d <= speed || d < 1e-6) { v.x = tx; v.y = ty; return true; }
-  v.x += (dx / d) * speed; v.y += (dy / d) * speed;
+  if (d <= speed || d < 1e-6) { o.x = tx; o.y = ty; return true; }
+  o.x += (dx / d) * speed; o.y += (dy / d) * speed;
   return false;
 }
 
@@ -666,7 +856,6 @@ function queueSlot(a, i) {
     y: clamp(a.y + a.radius + 1.6 + row * 1.5, WORLD.margin, WORLD.h - WORLD.margin),
   };
 }
-
 function riderSlot(a, i, n) {
   const ang = (i / Math.max(1, n)) * Math.PI * 2 - Math.PI / 2;
   return { x: a.x + Math.cos(ang) * a.radius * 0.55, y: a.y + Math.sin(ang) * a.radius * 0.55 };
@@ -679,65 +868,87 @@ function leaveVisitor(v, reason) {
   v.leaveReason = reason;
 }
 
+function cheapestPrice() {
+  let m = Infinity;
+  for (const a of state.attractions) if (!a.broken && a.price < m) m = a.price;
+  return m;
+}
+
 /* =============================================================================
    BOUCLE DE SIMULATION — un tick = 1,5 s en vitesse normale
-   1. spawn  2. les visiteurs agissent  3. recalcul des files
-   4. revenu (− entretien)  5. dérive de popularité  6. météo
+   1. spawn  2. besoins & départs  3. les visiteurs agissent + embarquement
+   4. files & satisfaction  5. revenu et charges  6. popularité  7. météo
+   8. personnel, usure et pannes
    ========================================================================== */
 function tick() {
   state.ticks++;
   for (const v of state.visitors) { v.px = v.x; v.py = v.y; }
+  for (const s of state.staff) { s.px = s.x; s.py = s.y; }
 
   /* --- 1. Spawn ---------------------------------------------------------- */
   const avgPop = state.attractions.length
-    ? state.attractions.reduce((s, a) => s + a.popularity, 0) / state.attractions.length : 0;
-  let spawnP = CONFIG.spawnBase * (0.5 + avgPop);
-  if (state.marketingTicks > 0) spawnP *= CONFIG.marketingBoost; // hors spec
+    ? mean(state.attractions.map((a) => a.popularity)) : 0;
+  const popTerm = CONFIG.reputationDrift > 0 ? (avgPop + state.reputation) / 2 : avgPop;
+  let spawnP = CONFIG.spawnBase * (0.5 + popTerm);
+  if (state.marketingTicks > 0) spawnP *= CONFIG.marketingBoost;
   if (state.visitors.length < CONFIG.maxVisitors && rng() < spawnP) spawnVisitor();
 
   /* --- 2a. Les visiteurs « dessus » au tick précédent redescendent -------- */
   for (const a of state.attractions) {
     for (const v of a.riders) {
-      v.rides++; v.spent += a.price; a.served++;
-      v.mode = 'wandering';
-      v.targetId = null;
-      v.failedSearches = 0;
+      v.rides++; a.served++;
+      if (a.category === 'food') {
+        v.hunger = Math.max(0, v.hunger - 0.7);
+        v.energy = clamp01(v.energy + CONFIG.energyFromFood);
+      } else if (CONFIG.energyDrain > 0) {
+        v.energy = clamp01(v.energy - 0.02);
+      }
+      v.mode = 'wandering'; v.targetId = null; v.failedSearches = 0;
       newWanderTarget(v);
     }
     a.riders.length = 0;
   }
 
-  /* --- 2b. Chaque visiteur agit ------------------------------------------ */
+  /* --- 2b. Besoins et raisons de départ ----------------------------------- */
+  const minPrice = cheapestPrice();
+  for (const v of state.visitors) {
+    if (v.mode === 'leaving') continue;
+    if (CONFIG.hungerRate > 0) v.hunger = clamp01(v.hunger + CONFIG.hungerRate);
+    if (CONFIG.energyDrain > 0) {
+      const walking = v.mode === 'traveling' || v.mode === 'wandering';
+      v.energy = clamp01(v.energy - CONFIG.energyDrain * (walking ? 1.4 : 1));
+      if (v.energy <= 0) { leaveVisitor(v, 'fatigue'); continue; }
+    }
+    // minPrice vaut Infinity si tout est en panne : ce n'est pas un problème d'argent,
+    // le visiteur errera puis partira par le chemin « rien d'assez attirant ».
+    if (CONFIG.walletBase > 0 && isFinite(minPrice) && v.wallet < minPrice) {
+      leaveVisitor(v, 'argent'); continue;
+    }
+    if (CONFIG.maxVisitDuration > 0 && v.mode !== 'riding' &&
+        state.ticks - v.bornTick >= CONFIG.maxVisitDuration) { leaveVisitor(v, 'temps'); }
+  }
+
+  /* --- 3. Chaque visiteur agit ------------------------------------------- */
   const departed = [];
   for (const v of state.visitors) {
-    // hors spec : durée de visite plafonnée (0 = désactivé)
-    if (CONFIG.maxVisitDuration > 0 && v.mode !== 'riding' && v.mode !== 'leaving' &&
-        state.ticks - v.bornTick >= CONFIG.maxVisitDuration) {
-      leaveVisitor(v, 'fin de visite');
-    }
     switch (v.mode) {
 
       case 'wandering': {
         const dest = chooseDestination(v);
         if (dest) {
-          v.mode = 'traveling';
-          v.targetId = dest.id;
-          v.failedSearches = 0;
+          v.mode = 'traveling'; v.targetId = dest.id; v.failedSearches = 0;
           moveToward(v, dest.x, dest.y, SPEED.travel);
         } else {
           v.failedSearches++;
-          if (v.failedSearches >= CONFIG.wanderPatience) {
-            leaveVisitor(v, 'rien d’assez attirant');
-          } else {
-            if (moveToward(v, v.wander.x, v.wander.y, SPEED.wander)) newWanderTarget(v);
-          }
+          if (v.failedSearches >= CONFIG.wanderPatience) leaveVisitor(v, 'rien');
+          else if (moveToward(v, v.wander.x, v.wander.y, SPEED.wander)) newWanderTarget(v);
         }
         break;
       }
 
       case 'traveling': {
         const a = attractionById(v.targetId);
-        if (!a) { v.mode = 'wandering'; v.targetId = null; newWanderTarget(v); break; }
+        if (!a || a.broken) { v.mode = 'wandering'; v.targetId = null; newWanderTarget(v); break; }
         const arrived = moveToward(v, a.x, a.y, SPEED.travel) || dist(v, a) <= a.radius + 1.2;
         if (arrived) { v.mode = 'queueing'; v.joinTick = state.ticks; }
         break;
@@ -756,13 +967,23 @@ function tick() {
       }
     }
   }
+  for (const v of departed) {
+    const reason = v.leaveReason || 'rien';
+    state.departures[reason] = (state.departures[reason] || 0) + 1;
+    state.satisfactionOnExit.push(v.satisfaction);
+    if (state.satisfactionOnExit.length > 200) state.satisfactionOnExit.shift();
+    if (CONFIG.reputationDrift > 0) {
+      state.reputation = clamp01(state.reputation + (v.satisfaction - state.reputation) * CONFIG.reputationDrift);
+    }
+    if (v.id === state.selectedVisitorId) state.selectedVisitorId = null;
+  }
   if (departed.length) {
     const set = new Set(departed);
     state.visitors = state.visitors.filter((v) => !set.has(v));
     state.totalLeft += departed.length;
   }
 
-  /* --- 2c. Embarquement : la file monte sur l'attraction (FIFO) ----------- */
+  /* --- 3b. Embarquement : la file monte sur l'attraction (FIFO) ----------- */
   const waiting = new Map();
   for (const v of state.visitors) {
     if (v.mode !== 'queueing') continue;
@@ -772,11 +993,26 @@ function tick() {
   for (const a of state.attractions) {
     const list = waiting.get(a.id) || [];
     list.sort((p, q) => (p.joinTick - q.joinTick) || (p.id - q.id));
+    if (a.broken) {
+      // l'attraction est à l'arrêt : la file se disperse et le moral en prend un coup
+      for (const v of list) {
+        v.mode = 'wandering'; v.targetId = null; v.slot = null;
+        v.satisfaction = clamp01(v.satisfaction - 0.08);
+        newWanderTarget(v);
+      }
+      continue;
+    }
     let boarded = 0;
     for (const v of list) {
       if (boarded >= a.capacity) break;
-      if (dist(v, a) > a.radius + 5) continue; // il faut être arrivé physiquement
+      if (dist(v, a) > a.radius + 5) continue;        // il faut être arrivé physiquement
+      if (v.wallet < a.price) {                        // le prix a monté depuis son choix
+        v.mode = 'wandering'; v.targetId = null; v.slot = null; newWanderTarget(v);
+        continue;
+      }
       v.mode = 'riding';
+      v.wallet -= a.price;
+      v.spentTotal += a.price;
       a.riders.push(v);
       boarded++;
     }
@@ -786,7 +1022,7 @@ function tick() {
     }
   }
 
-  /* --- 3. Recalcul des files par attraction ------------------------------ */
+  /* --- 4. Recalcul des files, puis satisfaction --------------------------- */
   for (const a of state.attractions) a.queue = 0;
   const queues = new Map();
   for (const v of state.visitors) {
@@ -803,17 +1039,26 @@ function tick() {
     for (let i = 0; i < list.length; i++) list[i].slot = queueSlot(a, i);
   }
 
-  /* --- Satisfaction : glisse de 25 % vers sa cible ------------------------ */
+  // la satisfaction glisse de 25 % vers sa cible (spec)
   for (const v of state.visitors) {
-    // le visiteur garde sa cible pendant le trajet, la file et le tour
     const ref = v.targetId ? attractionById(v.targetId) : null;
     if (!ref) continue;
     const target = satisfactionTarget(v, ref);
-    v.satisfaction += (target - v.satisfaction) * CONFIG.satisfactionLerp;
-    v.satisfaction = clamp01(v.satisfaction);
+    v.satisfaction = clamp01(v.satisfaction + (target - v.satisfaction) * CONFIG.satisfactionLerp);
+  }
+  // les animateurs remontent le moral autour d'eux
+  if (CONFIG.entertainBoost > 0) {
+    for (const s of state.staff) {
+      if (s.type !== 'animateur') continue;
+      for (const v of state.visitors) {
+        if (dist(s, v) <= CONFIG.entertainRadius) {
+          v.satisfaction = clamp01(v.satisfaction + CONFIG.entertainBoost);
+        }
+      }
+    }
   }
 
-  /* --- 4. Revenu --------------------------------------------------------- */
+  /* --- 5. Revenu et charges ---------------------------------------------- */
   state.revenueThisTick = 0;
   for (const a of state.attractions) {
     let rev = a.price * a.riders.length;
@@ -834,44 +1079,102 @@ function tick() {
   state.money += state.revenueThisTick;
   state.totalRevenue += state.revenueThisTick;
 
-  // hors spec : entretien, pour que construire engage à quelque chose
   state.upkeepThisTick = 0;
   if (CONFIG.upkeepMultiplier > 0) {
     for (const a of state.attractions) state.upkeepThisTick += a.upkeep;
     state.upkeepThisTick *= CONFIG.upkeepMultiplier;
-    state.money -= state.upkeepThisTick;
-    state.totalUpkeep += state.upkeepThisTick;
   }
+  state.salaryThisTick = 0;
+  for (const s of state.staff) state.salaryThisTick += s.salary * CONFIG.staffSalary;
+  state.money -= state.upkeepThisTick + state.salaryThisTick;
+  state.totalUpkeep += state.upkeepThisTick;
+  state.totalSalary += state.salaryThisTick;
+
   if (state.money < 0 && !state.wasBroke) {
     state.wasBroke = true;
-    logEvent('<b>Caisse dans le rouge</b> — démolissez ou baissez l’entretien');
+    logEvent('<b>Caisse dans le rouge</b> — démolissez, licenciez ou remontez les prix');
   } else if (state.money >= 0 && state.wasBroke) {
     state.wasBroke = false;
   }
 
-  /* --- 5. Dérive de popularité (bouche-à-oreille, 2 %/tick) --------------- */
+  /* --- 6. Dérive de popularité (bouche-à-oreille, 2 %/tick) --------------- */
   for (const a of state.attractions) {
     if (!a.riders.length) continue;
-    let s = 0;
-    for (const v of a.riders) s += v.satisfaction;
-    const mean = s / a.riders.length;
-    a.popularity += (mean - a.popularity) * CONFIG.popularityDrift;
-    a.popularity = clamp01(a.popularity);
+    const m = mean(a.riders.map((v) => v.satisfaction));
+    a.popularity = clamp01(a.popularity + (m - a.popularity) * CONFIG.popularityDrift);
   }
 
-  /* --- 6. Météo ---------------------------------------------------------- */
+  /* --- 7. Météo ---------------------------------------------------------- */
   if (!state.weatherLocked && CONFIG.weatherChangeTicks > 0 && rng() < 1 / CONFIG.weatherChangeTicks) {
     state.weather = state.weather === 'sun' ? 'rain' : 'sun';
     logEvent(state.weather === 'rain' ? 'La pluie arrive ☔' : 'Le soleil revient ☀');
   }
-
   if (state.marketingTicks > 0) {
     state.marketingTicks--;
     if (state.marketingTicks === 0) logEvent('Fin de la campagne marketing');
   }
 
+  /* --- 8. Usure, pannes et personnel -------------------------------------- */
+  if (CONFIG.breakdownRate > 0) {
+    for (const a of state.attractions) {
+      if (a.broken) continue;
+      a.wear = clamp01(a.wear + a.riders.length * CONFIG.wearPerRide * WEAR_FACTOR[a.category] / Math.max(1, a.capacity / 4));
+      if (rng() < CONFIG.breakdownRate * a.wear) {
+        a.broken = true; a.brokenAt = state.ticks; a.repairProgress = 0;
+        a.breakdowns++; state.breakdownsTotal++;
+        a.popularity = clamp01(a.popularity - CONFIG.breakdownPopularityHit);
+        logEvent('<b>Panne</b> — ' + a.name);
+      }
+    }
+  }
+  stepStaff();
+
+  /* --- Carte de chaleur, objectifs, historique ---------------------------- */
+  for (const v of state.visitors) {
+    const gx = Math.floor(clamp(v.x / WORLD.w, 0, 0.999) * HEAT.w);
+    const gy = Math.floor(clamp(v.y / WORLD.h, 0, 0.999) * HEAT.h);
+    state.heat[gy * HEAT.w + gx] += 1;
+  }
   checkGoals();
   recordHistory();
+}
+
+function stepStaff() {
+  for (const s of state.staff) {
+    if (s.type === 'mecanicien') {
+      let target = s.targetId ? attractionById(s.targetId) : null;
+      if (!target || !target.broken) {
+        target = null; s.targetId = null;
+        let bestD = Infinity;
+        for (const a of state.attractions) {
+          if (!a.broken) continue;
+          const d = dist(s, a);
+          if (d < bestD) { bestD = d; target = a; }
+        }
+        if (target) s.targetId = target.id;
+      }
+      if (target) {
+        if (dist(s, target) <= target.radius + 2) {
+          target.repairProgress += 1 / Math.max(1, CONFIG.repairTicks);
+          if (target.repairProgress >= 1) {
+            target.broken = false; target.repairProgress = 0; target.wear = 0;
+            s.repairs++; s.targetId = null;
+            logEvent(target.name + ' réparée par un mécanicien');
+          }
+        } else {
+          moveToward(s, target.x, target.y, SPEED.staff);
+        }
+      } else {
+        moveToward(s, s.homeX, s.homeY, SPEED.staff * 0.6);
+      }
+    } else { // animateur : ronde autour de son point d'ancrage
+      s.wanderAngle += (rng() - 0.5) * 0.9;
+      const r = 5;
+      moveToward(s, clamp(s.homeX + Math.cos(s.wanderAngle) * r, WORLD.margin, WORLD.w - WORLD.margin),
+                    clamp(s.homeY + Math.sin(s.wanderAngle) * r, WORLD.margin, WORLD.h - WORLD.margin),
+                 SPEED.staff * 0.45);
+    }
+  }
 }
 
 function checkGoals() {
@@ -886,49 +1189,38 @@ function checkGoals() {
 
 function recordHistory() {
   const vis = state.visitors.length;
-  const sat = vis ? state.visitors.reduce((s, v) => s + v.satisfaction, 0) / vis : 0;
   state.history.push({
-    t: state.ticks, visitors: vis, net: state.revenueThisTick - state.upkeepThisTick,
-    sat, rain: state.weather === 'rain',
+    t: state.ticks, visitors: vis,
+    net: state.revenueThisTick - state.upkeepThisTick - state.salaryThisTick,
+    sat: vis ? mean(state.visitors.map((v) => v.satisfaction)) : 0,
+    rain: state.weather === 'rain',
+    money: state.money,
+    broken: state.attractions.filter((a) => a.broken).length,
   });
-  if (state.history.length > 420) state.history.shift();
+  if (state.history.length > 600) state.history.shift();
 }
 
 function avgSatisfaction() {
   if (!state.visitors.length) return null;
-  return state.visitors.reduce((s, v) => s + v.satisfaction, 0) / state.visitors.length;
+  return mean(state.visitors.map((v) => v.satisfaction));
 }
 function avgPopularity() {
   if (!state.attractions.length) return null;
-  return state.attractions.reduce((s, a) => s + a.popularity, 0) / state.attractions.length;
+  return mean(state.attractions.map((a) => a.popularity));
 }
 
 /* =============================================================================
    ACTIONS DU JOUEUR
    ========================================================================== */
-function canPlace(x, y, key, ignoreId) {
-  const bp = BLUEPRINTS[key];
-  const m = WORLD.margin + bp.radius;
+function canPlace(x, y, radius, ignoreId) {
+  const m = WORLD.margin + radius;
   if (x < m || x > WORLD.w - m || y < m || y > WORLD.h - m) return false;
   if (Math.abs(x - GATE.x) < 8 && Math.abs(y - GATE.y) < 5) return false; // ne pas boucher l'entrée
   for (const a of state.attractions) {
     if (a.id === ignoreId) continue;
-    if (dist({ x, y }, a) < a.radius + bp.radius + 2) return false;
+    if (dist({ x, y }, a) < a.radius + radius + 2) return false;
   }
   return true;
-}
-
-function placeAttraction(x, y) {
-  const bp = BLUEPRINTS[buildType];
-  if (state.money < bp.cost) { flashHint('Fonds insuffisants pour ' + bp.name + '.'); return; }
-  if (!canPlace(x, y, buildType)) { flashHint('Emplacement invalide (bord, entrée ou attraction trop proche).'); return; }
-  const a = makeAttraction(buildType, x, y);
-  a.builtAt = state.ticks;
-  state.attractions.push(a);
-  state.money -= bp.cost;
-  logEvent(bp.name + ' construit (−' + fmtMoney(bp.cost) + ' €)' + proximityNote(a));
-  state.selectedId = a.id;
-  renderPanels();
 }
 
 function proximityNote(a) {
@@ -940,6 +1232,19 @@ function proximityNote(a) {
   return n ? ' · ' + n + ' voisin(s) dans le rayon du bonus' : '';
 }
 
+function placeAttraction(x, y) {
+  const bp = BLUEPRINTS[buildType];
+  if (state.money < bp.cost) { flashHint('Fonds insuffisants pour ' + bp.name + '.'); return; }
+  if (!canPlace(x, y, bp.radius)) { flashHint('Emplacement invalide (bord, entrée ou attraction trop proche).'); return; }
+  const a = makeAttraction(buildType, x, y);
+  a.builtAt = state.ticks;
+  state.attractions.push(a);
+  state.money -= bp.cost;
+  logEvent(bp.name + ' construit (−' + fmtMoney(bp.cost) + ' €)' + proximityNote(a));
+  state.selectedId = a.id; state.selectedVisitorId = null;
+  renderPanels();
+}
+
 function removeAttraction(id) {
   const idx = state.attractions.findIndex((a) => a.id === id);
   if (idx < 0) return;
@@ -947,6 +1252,7 @@ function removeAttraction(id) {
   for (const v of state.visitors) {
     if (v.targetId === a.id) { v.targetId = null; v.mode = 'wandering'; v.slot = null; newWanderTarget(v); }
   }
+  for (const s of state.staff) if (s.targetId === a.id) s.targetId = null;
   state.attractions.splice(idx, 1);
   const refund = Math.round(a.invested * 0.5);
   state.money += refund;
@@ -956,8 +1262,7 @@ function removeAttraction(id) {
 }
 
 function upgradeCapacity(a) {
-  const cost = upgradeCost(a, 'capacity');
-  const bp = BLUEPRINTS[a.type];
+  const bp = BLUEPRINTS[a.type], cost = upgradeCost(a, 'capacity');
   if (a.capacityBonus >= bp.capMax) { flashHint(a.name + ' est déjà au maximum.'); return; }
   if (state.money < cost) { flashHint('Il faut ' + fmtMoney(cost) + ' € pour agrandir.'); return; }
   state.money -= cost;
@@ -971,8 +1276,7 @@ function upgradeCapacity(a) {
 
 function buildRoof(a) {
   if (!a.outdoor) { flashHint(a.name + ' est déjà couverte.'); return; }
-  const cost = upgradeCost(a, 'roof');
-  const bp = BLUEPRINTS[a.type];
+  const bp = BLUEPRINTS[a.type], cost = upgradeCost(a, 'roof');
   if (state.money < cost) { flashHint('Il faut ' + fmtMoney(cost) + ' € pour couvrir.'); return; }
   state.money -= cost;
   a.outdoor = false;
@@ -992,6 +1296,25 @@ function renovate(a) {
   renderPanels();
 }
 
+function serviceAttraction(a) {
+  const cost = upgradeCost(a, 'service');
+  if (state.money < cost) { flashHint('Il faut ' + fmtMoney(cost) + ' € pour la révision.'); return; }
+  state.money -= cost;
+  a.wear = 0;
+  logEvent(a.name + ' révisée — usure remise à zéro (−' + fmtMoney(cost) + ' €)');
+  renderPanels();
+}
+
+function repairNow(a) {
+  if (!a.broken) return;
+  const cost = upgradeCost(a, 'repair');
+  if (state.money < cost) { flashHint('Il faut ' + fmtMoney(cost) + ' € pour réparer sur-le-champ.'); return; }
+  state.money -= cost;
+  a.broken = false; a.wear = 0; a.repairProgress = 0;
+  logEvent(a.name + ' réparée sur-le-champ (−' + fmtMoney(cost) + ' €)');
+  renderPanels();
+}
+
 function changePrice(a, delta) {
   const next = clamp(a.price + delta, 1, Math.round(a.basePrice * 3));
   if (next === a.price) return;
@@ -999,13 +1322,178 @@ function changePrice(a, delta) {
   renderPanels();
 }
 
+function hireStaff(typeKey, x, y) {
+  const st = STAFF_TYPES[typeKey];
+  if (state.money < st.cost) { flashHint('Il faut ' + fmtMoney(st.cost) + ' € pour embaucher.'); return; }
+  if (!canPlace(x, y, 1.6)) { flashHint('Placez le personnel sur une allée, pas sur une attraction.'); return; }
+  const s = makeStaff(typeKey, x, y);
+  s.hiredAt = state.ticks;
+  state.staff.push(s);
+  state.money -= st.cost;
+  logEvent(st.name + ' embauché (−' + fmtMoney(st.cost) + ' €, ' + fmt1(st.salary) + ' €/tick)');
+  renderPanels();
+}
+
+function fireStaff(id) {
+  const idx = state.staff.findIndex((s) => s.id === id);
+  if (idx < 0) return;
+  const s = state.staff[idx];
+  state.staff.splice(idx, 1);
+  if (state.selectedId === id) state.selectedId = null;
+  logEvent(STAFF_TYPES[s.type].name + ' licencié');
+  renderPanels();
+}
+
 function launchMarketing() {
   if (state.marketingTicks > 0) { flashHint('Une campagne est déjà en cours.'); return; }
-  if (state.money < CONFIG.marketingCost) { flashHint('Il faut ' + fmtMoney(CONFIG.marketingCost) + ' € pour lancer une campagne.'); return; }
+  if (state.money < CONFIG.marketingCost) { flashHint('Il faut ' + fmtMoney(CONFIG.marketingCost) + ' €.'); return; }
   state.money -= CONFIG.marketingCost;
   state.marketingTicks = CONFIG.marketingDuration;
-  logEvent('Campagne marketing lancée — spawn ×' + CONFIG.marketingBoost + ' pendant ' + CONFIG.marketingDuration + ' ticks');
+  logEvent('Campagne lancée — spawn ×' + CONFIG.marketingBoost + ' pendant ' + CONFIG.marketingDuration + ' ticks');
   renderPanels();
+}
+
+/* =============================================================================
+   BAC À SABLE : runs par lot sans toucher au parc affiché
+   ========================================================================== */
+function withSandbox(fn) {
+  const saved = { state, rng, nextId, quiet: quietSim };
+  quietSim = true;
+  try { return fn(); }
+  finally { state = saved.state; rng = saved.rng; nextId = saved.nextId; quietSim = saved.quiet; }
+}
+
+function runOne(seed, ticks) {
+  return withSandbox(() => {
+    initState(seed);
+    for (let i = 0; i < ticks; i++) tick();
+    const S = state;
+    return {
+      argent: S.money,
+      visiteurs: S.visitors.length,
+      entres: S.totalSpawned,
+      repartis: S.totalLeft,
+      tours: S.attractions.reduce((s, a) => s + a.served, 0),
+      satisfaction: S.visitors.length ? mean(S.visitors.map((v) => v.satisfaction)) : 0,
+      reputation: S.reputation,
+      pannes: S.breakdownsTotal,
+      objectifs: Object.keys(S.goals).length,
+    };
+  });
+}
+
+const BATCH_ROWS = [
+  ['argent',       'Argent final',       (v) => fmtMoney(v) + ' €'],
+  ['visiteurs',    'Visiteurs à la fin', (v) => v.toFixed(1)],
+  ['entres',       'Visiteurs entrés',   (v) => v.toFixed(0)],
+  ['repartis',     'Visiteurs repartis', (v) => v.toFixed(0)],
+  ['tours',        'Tours servis',       (v) => v.toFixed(0)],
+  ['satisfaction', 'Satisfaction',       (v) => v.toFixed(2)],
+  ['reputation',   'Réputation',         (v) => v.toFixed(2)],
+  ['pannes',       'Pannes',             (v) => v.toFixed(1)],
+  ['objectifs',    'Objectifs atteints', (v) => v.toFixed(1)],
+];
+
+let batchRunning = false;
+function runBatch(runs, ticks) {
+  if (batchRunning) return;
+  batchRunning = true;
+  const results = [];
+  const bar = el('batchProgress'), fill = bar.firstElementChild;
+  bar.hidden = false; fill.style.width = '0%';
+  el('batchBtn').disabled = true;
+  const baseSeed = (parseInt(el('seed').value, 10) || 1337);
+
+  const step = (i) => {
+    if (i >= runs) {
+      batchRunning = false;
+      el('batchBtn').disabled = false;
+      bar.hidden = true;
+      renderBatch(results, runs, ticks);
+      return;
+    }
+    results.push(runOne(baseSeed + i * 7919, ticks));
+    fill.style.width = (((i + 1) / runs) * 100).toFixed(1) + '%';
+    setTimeout(() => step(i + 1), 0);
+  };
+  setTimeout(() => step(0), 0);
+}
+
+/* =============================================================================
+   SAUVEGARDE LOCALE
+   ========================================================================== */
+const SAVE_KEY = 'parkTycoonPrototype.save.v1';
+
+function serializeState() {
+  const clone = {};
+  for (const k of Object.keys(state)) {
+    if (k === 'attractions') {
+      clone.attractions = state.attractions.map((a) => Object.assign({}, a, { riders: a.riders.map((v) => v.id) }));
+    } else if (k === 'heat') {
+      continue; // la chaleur se reconstruit toute seule
+    } else {
+      clone[k] = state[k];
+    }
+  }
+  return JSON.stringify({ v: 1, config: CONFIG, preset: presetKey, nextId,
+                          rngState: rng.getState(), state: clone });
+}
+
+function deserializeState(text) {
+  const data = JSON.parse(text);
+  if (!data || data.v !== 1) throw new Error('format inconnu');
+  Object.assign(CONFIG, SPEC, data.config);
+  presetKey = data.preset in PRESETS ? data.preset : 'full';
+  nextId = data.nextId;
+  rng = makeRng(0); rng.setState(data.rngState);
+  state = data.state;
+  state.heat = new Array(HEAT.w * HEAT.h).fill(0);
+  const byId = new Map(state.visitors.map((v) => [v.id, v]));
+  for (const a of state.attractions) {
+    a.riders = (a.riders || []).map((id) => byId.get(id)).filter(Boolean);
+  }
+}
+
+function saveLocal() {
+  try {
+    localStorage.setItem(SAVE_KEY, serializeState());
+    logEvent('Parc sauvegardé (tick ' + state.ticks + ')');
+  } catch (e) {
+    flashHint('Sauvegarde impossible : ' + (e && e.message ? e.message : 'stockage indisponible'));
+  }
+  renderSaveNote();
+}
+
+function loadLocal() {
+  let text = null;
+  try { text = localStorage.getItem(SAVE_KEY); } catch (e) { text = null; }
+  if (!text) { flashHint('Aucune sauvegarde trouvée.'); return; }
+  try {
+    deserializeState(text);
+    inspectorKind = null;
+    syncTuningInputs(); syncPreset();
+    renderPanels(); renderLegend(); renderLog(); updateHint();
+    logEvent('Parc chargé (tick ' + state.ticks + ')');
+  } catch (e) {
+    flashHint('Sauvegarde illisible : ' + (e && e.message ? e.message : 'erreur'));
+  }
+  renderSaveNote();
+}
+
+function savedInfo() {
+  try {
+    const text = localStorage.getItem(SAVE_KEY);
+    if (!text) return null;
+    const d = JSON.parse(text);
+    return { ticks: d.state.ticks, money: d.state.money, preset: d.preset };
+  } catch (e) { return null; }
+}
+
+function buildCsv() {
+  const head = 'tick,visiteurs,net,satisfaction,argent,pluie,pannes';
+  const rows = state.history.map((h) =>
+    [h.t, h.visitors, h.net.toFixed(2), h.sat.toFixed(4), h.money.toFixed(2), h.rain ? 1 : 0, h.broken].join(','));
+  return [head].concat(rows).join('\n');
 }
 
 /* =============================================================================
@@ -1048,10 +1536,21 @@ function attractionAt(p) {
   for (const a of state.attractions) if (dist(p, a) <= a.radius * 1.25) hit = a;
   return hit;
 }
-
-function satColor(s) {
-  return 'hsl(' + (clamp01(s) * 130).toFixed(0) + ' 75% 58%)';
+function staffAt(p) {
+  let hit = null;
+  for (const s of state.staff) if (dist(p, s) <= 2.2) hit = s;
+  return hit;
 }
+function visitorAt(p) {
+  let hit = null, bestD = 1.6;
+  for (const v of state.visitors) {
+    const d = dist(p, v);
+    if (d < bestD) { bestD = d; hit = v; }
+  }
+  return hit;
+}
+
+const satColor = (s) => 'hsl(' + (clamp01(s) * 130).toFixed(0) + ' 75% 58%)';
 
 function drawGround() {
   ctx.fillStyle = '#101820';
@@ -1073,6 +1572,23 @@ function drawGround() {
   ctx.font = '600 ' + clamp(su(1.15), 8, 12).toFixed(1) + 'px system-ui, sans-serif';
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
   ctx.fillText('ENTRÉE', sx(GATE.x), sy(GATE.y));
+}
+
+function drawHeat() {
+  if (!showHeatEl.checked) return;
+  let max = 0;
+  for (const v of state.heat) if (v > max) max = v;
+  if (max <= 0) return;
+  const cw = su(WORLD.w / HEAT.w), ch = su(WORLD.h / HEAT.h);
+  for (let gy = 0; gy < HEAT.h; gy++) {
+    for (let gx = 0; gx < HEAT.w; gx++) {
+      const v = state.heat[gy * HEAT.w + gx];
+      if (!v) continue;
+      const t = Math.pow(v / max, 0.45);
+      ctx.fillStyle = 'hsla(' + (210 - t * 190).toFixed(0) + ' 85% 55% / ' + (t * 0.42).toFixed(3) + ')';
+      ctx.fillRect(sx(gx * WORLD.w / HEAT.w), sy(gy * WORLD.h / HEAT.h), cw + 1, ch + 1);
+    }
+  }
 }
 
 function drawProximityLinks() {
@@ -1108,18 +1624,13 @@ function attractionPath(shape, cx, cy, r) {
     ctx.rect(cx - w, cy - h, w * 2, h * 2);
   } else if (shape === 'house') {
     const w = r * 0.82, h = r * 0.8;
-    ctx.moveTo(cx - w, cy + h);
-    ctx.lineTo(cx - w, cy - h * 0.25);
-    ctx.lineTo(cx, cy - h);
-    ctx.lineTo(cx + w, cy - h * 0.25);
-    ctx.lineTo(cx + w, cy + h);
-    ctx.closePath();
+    ctx.moveTo(cx - w, cy + h); ctx.lineTo(cx - w, cy - h * 0.25);
+    ctx.lineTo(cx, cy - h); ctx.lineTo(cx + w, cy - h * 0.25);
+    ctx.lineTo(cx + w, cy + h); ctx.closePath();
   } else if (shape === 'cone') {
-    ctx.moveTo(cx, cy - r * 0.9);
-    ctx.lineTo(cx + r * 0.75, cy + r * 0.6);
-    ctx.lineTo(cx - r * 0.75, cy + r * 0.6);
-    ctx.closePath();
-  } else { // coaster : rectangle arrondi allongé
+    ctx.moveTo(cx, cy - r * 0.9); ctx.lineTo(cx + r * 0.75, cy + r * 0.6);
+    ctx.lineTo(cx - r * 0.75, cy + r * 0.6); ctx.closePath();
+  } else {
     const w = r * 0.98, h = r * 0.6, rad = r * 0.24;
     ctx.moveTo(cx - w + rad, cy - h);
     ctx.arcTo(cx + w, cy - h, cx + w, cy + h, rad);
@@ -1131,8 +1642,8 @@ function attractionPath(shape, cx, cy, r) {
 }
 
 function drawShapeDetails(shape, cx, cy, r, col) {
+  ctx.strokeStyle = col + '99'; ctx.lineWidth = 1;
   if (shape === 'wheel') {
-    ctx.strokeStyle = col + '99'; ctx.lineWidth = 1;
     ctx.beginPath();
     for (let i = 0; i < 6; i++) {
       const ang = (i / 6) * Math.PI;
@@ -1141,53 +1652,69 @@ function drawShapeDetails(shape, cx, cy, r, col) {
     }
     ctx.stroke();
   } else if (shape === 'tower') {
-    ctx.strokeStyle = col + '99'; ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(cx - r * 0.42, cy - r * 0.3); ctx.lineTo(cx + r * 0.42, cy - r * 0.3);
     ctx.stroke();
   }
 }
 
-// Toit : marque les attractions insensibles à la pluie.
 function drawRoof(cx, cy, r, col) {
   ctx.strokeStyle = col;
   ctx.lineWidth = clamp(su(0.28), 1.5, 3);
   ctx.lineCap = 'round';
   ctx.beginPath();
-  ctx.moveTo(cx - r * 1.0, cy - r * 1.22);
-  ctx.lineTo(cx, cy - r * 1.62);
-  ctx.lineTo(cx + r * 1.0, cy - r * 1.22);
+  ctx.moveTo(cx - r, cy - r * 1.22); ctx.lineTo(cx, cy - r * 1.62); ctx.lineTo(cx + r, cy - r * 1.22);
   ctx.stroke();
   ctx.lineCap = 'butt';
 }
 
 function drawAttraction(a) {
   const cx = sx(a.x), cy = sy(a.y), r = su(a.radius);
-  const col = CATEGORY_COLOR[a.category];
+  const col = a.broken ? '#f87171' : CATEGORY_COLOR[a.category];
   const selected = a.id === state.selectedId;
 
   const ring = r * 1.15;
   ctx.strokeStyle = 'rgba(255,255,255,.10)';
   ctx.lineWidth = clamp(su(0.32), 2, 4);
   ctx.beginPath(); ctx.arc(cx, cy, ring, 0, Math.PI * 2); ctx.stroke();
-  ctx.strokeStyle = col;
+  ctx.strokeStyle = CATEGORY_COLOR[a.category];
   ctx.beginPath();
   ctx.arc(cx, cy, ring, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * a.popularity);
   ctx.stroke();
+  // usure : arc rouge à l'extérieur
+  if (a.wear > 0.02) {
+    ctx.strokeStyle = 'rgba(248,113,113,.6)';
+    ctx.lineWidth = clamp(su(0.2), 1.5, 3);
+    ctx.beginPath();
+    ctx.arc(cx, cy, ring + su(0.55), Math.PI / 2, Math.PI / 2 + Math.PI * 2 * a.wear);
+    ctx.stroke();
+  }
 
   attractionPath(a.shape, cx, cy, r);
-  ctx.fillStyle = col + (a.outdoor ? '2e' : '4a');
+  ctx.fillStyle = (a.broken ? '#f87171' : CATEGORY_COLOR[a.category]) + (a.outdoor ? '2e' : '4a');
   ctx.fill();
   ctx.strokeStyle = selected ? '#ffffff' : col;
   ctx.lineWidth = selected ? 2.5 : 1.6;
   ctx.stroke();
-  drawShapeDetails(a.shape, cx, cy, r, col);
+  drawShapeDetails(a.shape, cx, cy, r, CATEGORY_COLOR[a.category]);
   if (!a.outdoor) drawRoof(cx, cy, r, '#cfd8e3');
+
+  if (a.broken) {
+    ctx.fillStyle = '#f87171';
+    ctx.font = '700 ' + clamp(su(2.2), 11, 22).toFixed(0) + 'px system-ui, sans-serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('!', cx, cy);
+    if (a.repairProgress > 0) {
+      ctx.strokeStyle = '#7dd3fc'; ctx.lineWidth = clamp(su(0.35), 2, 4);
+      ctx.beginPath();
+      ctx.arc(cx, cy, ring, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * clamp01(a.repairProgress));
+      ctx.stroke();
+    }
+  }
 
   if (selected) {
     ctx.setLineDash([su(0.6), su(0.6)]);
-    ctx.strokeStyle = 'rgba(255,255,255,.45)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(cx, cy, ring + su(1.2), 0, Math.PI * 2); ctx.stroke();
     ctx.setLineDash([]);
   }
@@ -1198,7 +1725,7 @@ function drawAttractionLabel(a) {
   const fs = clamp(su(1.2), 9, 12.5);
   const compact = view.scale < 6;
   const stats = compact ? '' : a.price + ' € · pop ' + fmt2(a.popularity) + ' · file ' + a.queue;
-  const name = (a.outdoor ? '' : '⌂ ') + a.name;
+  const name = (a.outdoor ? '' : '⌂ ') + a.name + (a.broken ? ' — EN PANNE' : '');
   const baseline = cy - r * (a.outdoor ? 1.35 : 1.75);
   ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
 
@@ -1208,34 +1735,77 @@ function drawAttractionLabel(a) {
   const wStats = stats ? ctx.measureText(stats).width : 0;
   const bw = Math.max(wName, wStats) + 8, bh = (stats ? fs * 2.3 : fs * 1.15) + 5;
 
-  ctx.fillStyle = 'rgba(10,14,19,.72)';
+  ctx.fillStyle = 'rgba(10,14,19,.74)';
   ctx.beginPath();
   const bx = cx - bw / 2, by = baseline - bh + 3;
   if (ctx.roundRect) ctx.roundRect(bx, by, bw, bh, 4); else ctx.rect(bx, by, bw, bh);
   ctx.fill();
 
-  if (stats) {
-    ctx.fillStyle = '#8d9aad';
-    ctx.fillText(stats, cx, baseline);
-  }
+  if (stats) { ctx.fillStyle = '#8d9aad'; ctx.fillText(stats, cx, baseline); }
   ctx.font = '600 ' + fs.toFixed(1) + 'px system-ui, sans-serif';
-  ctx.fillStyle = a.id === state.selectedId ? '#ffffff' : '#e6ebf2';
+  ctx.fillStyle = a.broken ? '#ffb4b4' : (a.id === state.selectedId ? '#ffffff' : '#e6ebf2');
   ctx.fillText(name, cx, stats ? baseline - fs * 1.15 : baseline);
 }
 
+function drawStaff(s, alpha) {
+  const st = STAFF_TYPES[s.type];
+  const x = sx(s.px + (s.x - s.px) * alpha), y = sy(s.py + (s.y - s.py) * alpha);
+  const r = clamp(su(1.1), 5, 11);
+  if (showStaffRangeEl.checked && s.type === 'animateur' && CONFIG.entertainBoost > 0) {
+    ctx.fillStyle = 'rgba(192,132,252,.07)';
+    ctx.beginPath(); ctx.arc(x, y, su(CONFIG.entertainRadius), 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.fillStyle = st.color;
+  ctx.beginPath();
+  if (ctx.roundRect) { ctx.roundRect(x - r, y - r, r * 2, r * 2, r * 0.4); } else { ctx.rect(x - r, y - r, r * 2, r * 2); }
+  ctx.fill();
+  ctx.strokeStyle = s.id === state.selectedId ? '#ffffff' : 'rgba(10,14,19,.6)';
+  ctx.lineWidth = s.id === state.selectedId ? 2 : 1;
+  ctx.stroke();
+  ctx.fillStyle = '#0e1116';
+  ctx.font = '700 ' + (r * 1.2).toFixed(1) + 'px system-ui, sans-serif';
+  ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  ctx.fillText(st.letter, x, y + 0.5);
+  if (s.type === 'mecanicien' && s.targetId) {
+    const t = attractionById(s.targetId);
+    if (t) {
+      ctx.strokeStyle = 'rgba(125,211,252,.35)';
+      ctx.setLineDash([su(0.6), su(0.6)]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(sx(t.x), sy(t.y)); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+}
+
+function visitorColor(v) {
+  if (dotMode === 'trait') return TRAITS[v.trait].color;
+  if (dotMode === 'satisfaction') return satColor(v.satisfaction);
+  if (dotMode === 'wallet') {
+    if (!isFinite(v.wallet)) return '#94a3b8';
+    return satColor(clamp01(v.wallet / Math.max(1, CONFIG.walletBase)));
+  }
+  if (dotMode === 'hunger') return satColor(1 - clamp01(v.hunger));
+  return STATE_COLORS[v.mode] || '#94a3b8';
+}
+
 function drawVisitor(v, alpha) {
-  const x = sx(v.px + (v.x - v.px) * alpha);
-  const y = sy(v.py + (v.y - v.py) * alpha);
-  let col;
-  if (dotMode === 'trait') col = TRAITS[v.trait].color;
-  else if (dotMode === 'satisfaction') col = satColor(v.satisfaction);
-  else col = STATE_COLORS[v.mode] || '#94a3b8';
+  const x = sx(v.px + (v.x - v.px) * alpha), y = sy(v.py + (v.y - v.py) * alpha);
   const r = clamp(su(0.45), 1.8, 4.2);
-  ctx.fillStyle = col;
+  ctx.fillStyle = visitorColor(v);
   ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
   if (v.mode === 'riding') {
     ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(x, y, r + 1.6, 0, Math.PI * 2); ctx.stroke();
+  }
+  if (v.id === state.selectedVisitorId) {
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, r + 4, 0, Math.PI * 2); ctx.stroke();
+    const t = v.targetId ? attractionById(v.targetId) : null;
+    if (t) {
+      ctx.strokeStyle = 'rgba(255,255,255,.4)'; ctx.setLineDash([su(0.5), su(0.5)]); ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(sx(t.x), sy(t.y)); ctx.stroke();
+      ctx.setLineDash([]);
+    }
   }
 }
 
@@ -1244,45 +1814,42 @@ function drawWeather(now) {
   ctx.save();
   ctx.fillStyle = 'rgba(56,110,160,.13)';
   ctx.fillRect(sx(0), sy(0), su(WORLD.w), su(WORLD.h));
-  ctx.strokeStyle = 'rgba(160,205,240,.28)';
-  ctx.lineWidth = 1;
+  ctx.strokeStyle = 'rgba(160,205,240,.28)'; ctx.lineWidth = 1;
   ctx.beginPath();
   const W = su(WORLD.w), H = su(WORLD.h), x0 = sx(0), y0 = sy(0);
   for (let i = 0; i < 130; i++) {
-    const px = (i * 79.3) % W;
-    const py = ((i * 143.7) + now * 0.42) % H;
-    ctx.moveTo(x0 + px, y0 + py);
-    ctx.lineTo(x0 + px - 3, y0 + py + 9);
+    const px = (i * 79.3) % W, py = ((i * 143.7) + now * 0.42) % H;
+    ctx.moveTo(x0 + px, y0 + py); ctx.lineTo(x0 + px - 3, y0 + py + 9);
   }
   ctx.stroke();
   ctx.restore();
 }
 
-function drawPlacementPreview(x, y, key, valid, ignoreId) {
-  const bp = BLUEPRINTS[key];
-  const cx = sx(x), cy = sy(y), r = su(bp.radius);
+function drawPlacementPreview(x, y, opts) {
+  const { shape, radius, category, valid, ignoreId } = opts;
+  const cx = sx(x), cy = sy(y), r = su(radius);
   ctx.save();
   ctx.globalAlpha = 0.8;
-  if (bp.category === 'food') {
+  if (category === 'food') {
     ctx.setLineDash([su(0.8), su(0.8)]);
-    ctx.strokeStyle = 'rgba(255,200,87,.45)';
-    ctx.lineWidth = 1;
+    ctx.strokeStyle = 'rgba(255,200,87,.45)'; ctx.lineWidth = 1;
     ctx.beginPath(); ctx.arc(cx, cy, su(CONFIG.foodBonusRadius), 0, Math.PI * 2); ctx.stroke();
     ctx.setLineDash([]);
   }
-  for (const b of state.attractions) {
-    if (b.id === ignoreId) continue;
-    const near = Math.hypot(x - b.x, y - b.y) < CONFIG.foodBonusRadius;
-    const pairs = (bp.category === 'food') !== (b.category === 'food');
-    if (near && pairs) {
-      ctx.strokeStyle = 'rgba(255,200,87,.6)'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(sx(b.x), sy(b.y)); ctx.stroke();
+  if (category) {
+    for (const b of state.attractions) {
+      if (b.id === ignoreId) continue;
+      const near = Math.hypot(x - b.x, y - b.y) < CONFIG.foodBonusRadius;
+      if (near && ((category === 'food') !== (b.category === 'food'))) {
+        ctx.strokeStyle = 'rgba(255,200,87,.6)'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(sx(b.x), sy(b.y)); ctx.stroke();
+      }
     }
   }
-  attractionPath(bp.shape, cx, cy, r);
-  ctx.fillStyle = valid ? CATEGORY_COLOR[bp.category] + '3a' : 'rgba(248,113,113,.25)';
+  attractionPath(shape, cx, cy, r);
+  ctx.fillStyle = valid ? (category ? CATEGORY_COLOR[category] : '#7dd3fc') + '3a' : 'rgba(248,113,113,.25)';
   ctx.fill();
-  ctx.strokeStyle = valid ? CATEGORY_COLOR[bp.category] : '#f87171';
+  ctx.strokeStyle = valid ? (category ? CATEGORY_COLOR[category] : '#7dd3fc') : '#f87171';
   ctx.lineWidth = 2; ctx.stroke();
   ctx.restore();
 }
@@ -1290,17 +1857,26 @@ function drawPlacementPreview(x, y, key, valid, ignoreId) {
 function render(now) {
   const alpha = speedMultiplier === 0 ? 1 : clamp01(tickAccumulator / tickInterval());
   drawGround();
+  drawHeat();
   drawProximityLinks();
   for (const a of state.attractions) drawAttraction(a);
   for (const v of state.visitors) drawVisitor(v, alpha);
+  for (const s of state.staff) drawStaff(s, alpha);
   const labelled = state.attractions.slice().sort((p, q) => p.y - q.y);
   for (const a of labelled) drawAttractionLabel(a);
   drawWeather(now);
+
   if (buildType && ghost) {
-    drawPlacementPreview(ghost.x, ghost.y, buildType,
-      canPlace(ghost.x, ghost.y, buildType) && state.money >= BLUEPRINTS[buildType].cost, null);
-  } else if (drag && drag.moved) {
-    drawPlacementPreview(drag.a.x, drag.a.y, drag.a.type, drag.valid, drag.a.id);
+    const bp = BLUEPRINTS[buildType];
+    drawPlacementPreview(ghost.x, ghost.y, { shape: bp.shape, radius: bp.radius, category: bp.category,
+      valid: canPlace(ghost.x, ghost.y, bp.radius) && state.money >= bp.cost, ignoreId: null });
+  } else if (hireType && ghost) {
+    drawPlacementPreview(ghost.x, ghost.y, { shape: 'square', radius: 1.6, category: null,
+      valid: canPlace(ghost.x, ghost.y, 1.6) && state.money >= STAFF_TYPES[hireType].cost, ignoreId: null });
+  } else if (drag && drag.moved && drag.kind === 'attraction') {
+    const a = drag.obj;
+    drawPlacementPreview(a.x, a.y, { shape: a.shape, radius: a.radius, category: a.category,
+      valid: drag.valid, ignoreId: a.id });
   }
 }
 
@@ -1309,19 +1885,28 @@ function render(now) {
    ========================================================================== */
 const el = (id) => document.getElementById(id);
 const hudMoney = el('hudMoney'), hudVisitors = el('hudVisitors'), hudWeather = el('hudWeather'),
-      hudTick = el('hudTick'), hudNet = el('hudNet'), hudNetK = el('hudNetK'),
-      hudSat = el('hudSat'), hudPop = el('hudPop'),
-      hudPromo = el('hudPromo'), hudPromoV = el('hudPromoV');
-const showLinksEl = el('showLinks');
-const stage = el('stage');
-const overlayHint = el('overlayHint');
-const legendEl = el('legend');
+      hudTick = el('hudTick'), hudNet = el('hudNet'), hudNetK = el('hudNetK'), hudSat = el('hudSat'),
+      hudRepChip = el('hudRepChip'), hudRep = el('hudRep'),
+      hudPromo = el('hudPromo'), hudPromoV = el('hudPromoV'),
+      hudBroken = el('hudBroken'), hudBrokenV = el('hudBrokenV');
+const showLinksEl = el('showLinks'), showHeatEl = el('showHeat'), showStaffRangeEl = el('showStaffRange');
+const stage = el('stage'), overlayHint = el('overlayHint'), legendEl = el('legend');
 const chart = el('chart'), cctx = chart.getContext('2d');
 
 let dotMode = 'state';
 let buildType = null;
+let hireType = null;
 let ghost = null;
 let drag = null;
+
+/* ---------- Onglets ------------------------------------------------------- */
+document.querySelectorAll('.tabbtn').forEach((b) => {
+  b.addEventListener('click', () => {
+    document.querySelectorAll('.tabbtn').forEach((x) => x.classList.toggle('active', x === b));
+    document.querySelectorAll('.pane').forEach((p) => { p.hidden = p.dataset.pane !== b.dataset.tab; });
+    if (b.dataset.tab === 'analyse') renderChart();
+  });
+});
 
 /* ---------- Vitesse ------------------------------------------------------- */
 const SPEEDS = [
@@ -1338,8 +1923,7 @@ function buildSpeedRow() {
   row.innerHTML = '';
   SPEEDS.forEach((s) => {
     const b = document.createElement('button');
-    b.textContent = s.label;
-    b.dataset.mult = String(s.mult);
+    b.textContent = s.label; b.dataset.mult = String(s.mult);
     b.addEventListener('click', () => setSpeed(s.mult));
     row.appendChild(b);
   });
@@ -1352,15 +1936,13 @@ function syncSpeedButtons() {
   });
 }
 
-/* ---------- Presets de règles --------------------------------------------- */
+/* ---------- Modèles ------------------------------------------------------- */
 function buildPresetRow() {
   const row = el('presetRow');
   row.innerHTML = '';
   for (const key of Object.keys(PRESETS)) {
     const b = document.createElement('button');
-    b.textContent = PRESETS[key].label;
-    b.dataset.preset = key;
-    b.className = 'wide';
+    b.textContent = PRESETS[key].label; b.dataset.preset = key; b.className = 'wide';
     b.addEventListener('click', () => applyPreset(key));
     row.appendChild(b);
   }
@@ -1369,8 +1951,8 @@ function buildPresetRow() {
 function applyPreset(key) {
   presetKey = key;
   Object.assign(CONFIG, SPEC, PRESETS[key].config);
-  el('tuneGrid').querySelectorAll('input').forEach((i) => { i.value = String(CONFIG[i.dataset.key]); });
-  logEvent('Règles : <b>' + PRESETS[key].label + '</b>');
+  syncTuningInputs();
+  logEvent('Modèle : <b>' + PRESETS[key].label + '</b>');
   syncPreset();
   renderPanels();
 }
@@ -1381,24 +1963,22 @@ function syncPreset() {
   el('presetNote').innerHTML = PRESETS[presetKey].note;
 }
 
-/* ---------- Construction -------------------------------------------------- */
+/* ---------- Construction & embauche --------------------------------------- */
 function buildRowInit() {
   const row = el('buildRow');
   row.innerHTML = '';
   let index = 0;
   for (const group of BUILD_GROUPS) {
     const h = document.createElement('div');
-    h.className = 'group-label';
-    h.textContent = CATEGORY_LABEL[group.category];
+    h.className = 'group-label'; h.textContent = CATEGORY_LABEL[group.category];
     row.appendChild(h);
     for (const key of group.keys) {
       const bp = BLUEPRINTS[key];
       index++;
       const b = document.createElement('button');
-      b.className = 'build';
-      b.dataset.type = key;
-      b.title = bp.name + ' — ' + bp.capacity + ' places, entretien ' + fmt1(bp.upkeep) +
-        ' €/tick' + (bp.outdoor ? ', extérieur' : ', couvert (insensible à la pluie)');
+      b.className = 'build'; b.dataset.type = key;
+      b.title = bp.name + ' — ' + bp.capacity + ' places, entretien ' + fmt1(bp.upkeep) + ' €/tick' +
+        (bp.outdoor ? ', extérieur' : ', couvert (insensible à la pluie)');
       b.innerHTML = '<span class="sw" style="background:' + CATEGORY_COLOR[bp.category] + '"></span>' +
         '<span class="nm">' + index + '. ' + bp.name +
         (bp.outdoor ? '' : ' <span class="roofed">⌂</span>') + '</span>' +
@@ -1407,19 +1987,44 @@ function buildRowInit() {
       row.appendChild(b);
     }
   }
+
+  const srow = el('staffRow');
+  srow.innerHTML = '';
+  for (const key of STAFF_KEYS) {
+    const st = STAFF_TYPES[key];
+    const b = document.createElement('button');
+    b.className = 'build'; b.dataset.staff = key; b.title = st.desc;
+    b.innerHTML = '<span class="sw" style="background:' + st.color + '"></span>' +
+      '<span class="nm">' + st.name + '</span>' +
+      '<span class="pr">' + fmtMoney(st.cost) + ' € · ' + fmt1(st.salary) + ' €/t</span>';
+    b.addEventListener('click', () => selectHire(hireType === key ? null : key));
+    srow.appendChild(b);
+  }
   syncBuildButtons();
 }
+
 function selectBuild(key) {
   buildType = key;
-  if (!key) ghost = null;
-  stage.classList.toggle('building', !!key);
-  syncBuildButtons();
-  updateHint();
+  if (key) hireType = null;
+  if (!key && !hireType) ghost = null;
+  stage.classList.toggle('building', !!(key || hireType));
+  syncBuildButtons(); updateHint();
+}
+function selectHire(key) {
+  hireType = key;
+  if (key) buildType = null;
+  if (!key && !buildType) ghost = null;
+  stage.classList.toggle('building', !!(key || buildType));
+  syncBuildButtons(); updateHint();
 }
 function syncBuildButtons() {
   el('buildRow').querySelectorAll('button').forEach((b) => {
     b.classList.toggle('active', b.dataset.type === buildType);
     b.disabled = state ? state.money < BLUEPRINTS[b.dataset.type].cost : false;
+  });
+  el('staffRow').querySelectorAll('button').forEach((b) => {
+    b.classList.toggle('active', b.dataset.staff === hireType);
+    b.disabled = state ? state.money < STAFF_TYPES[b.dataset.staff].cost : false;
   });
 }
 
@@ -1427,46 +2032,69 @@ let hintTimer = 0;
 function flashHint(msg) {
   overlayHint.innerHTML = '<b>' + msg + '</b>';
   clearTimeout(hintTimer);
-  hintTimer = setTimeout(updateHint, 2400);
+  hintTimer = setTimeout(updateHint, 2600);
 }
 function updateHint() {
   if (buildType) {
     const bp = BLUEPRINTS[buildType];
     overlayHint.innerHTML = '<b>' + bp.name + '</b> — cliquez pour poser (' + fmtMoney(bp.cost) +
       ' €). <kbd>échap</kbd> pour annuler.' +
-      (bp.category === 'food'
-        ? ' Le cercle montre le rayon de ' + CONFIG.foodBonusRadius + ' u. du bonus de proximité.'
-        : ' Les traits jaunes indiquent les stands qui profiteraient de sa file.');
+      (bp.category === 'food' ? ' Le cercle montre le rayon du bonus de proximité.'
+                              : ' Les traits jaunes montrent les stands qui profiteraient de sa file.');
+  } else if (hireType) {
+    overlayHint.innerHTML = '<b>' + STAFF_TYPES[hireType].name + '</b> — ' + STAFF_TYPES[hireType].desc +
+      ' Cliquez pour le placer.';
+  } else if (state && state.selectedVisitorId) {
+    overlayHint.innerHTML = 'Visiteur suivi — le panneau détaille son score pour chaque attraction. ' +
+      'Cliquez ailleurs pour le lâcher.';
   } else if (state && state.selectedId) {
-    overlayHint.innerHTML = 'Glissez l’attraction pour la déplacer · le panneau de droite ' +
-      'permet de l’agrandir, la couvrir, la rénover ou changer son prix.';
+    overlayHint.innerHTML = 'Glissez pour déplacer · le panneau de droite permet d’améliorer, ' +
+      'réparer ou démolir.';
   } else {
-    overlayHint.innerHTML = 'Cliquez une attraction pour l’améliorer, glissez-la pour la déplacer, ' +
-      'ou choisissez un type à construire dans le panneau.';
+    overlayHint.innerHTML = 'Cliquez une attraction pour l’améliorer, un visiteur pour le suivre, ' +
+      'ou choisissez quelque chose à construire.';
   }
 }
 
 /* ---------- Inspecteur ---------------------------------------------------- */
-let inspectorId = null;
-let inspRefs = null;
+let inspectorKind = null, inspectorId = null, inspRefs = null;
 
-function buildInspector(a) {
+function inspectorTarget() {
+  if (state.selectedVisitorId) {
+    const v = visitorById(state.selectedVisitorId);
+    if (v) return { kind: 'visitor', obj: v };
+    state.selectedVisitorId = null;
+  }
+  if (state.selectedId) {
+    const a = attractionById(state.selectedId);
+    if (a) return { kind: 'attraction', obj: a };
+    const s = state.staff.find((x) => x.id === state.selectedId);
+    if (s) return { kind: 'staff', obj: s };
+    state.selectedId = null;
+  }
+  return null;
+}
+
+function buildAttractionInspector() {
   const card = el('inspector');
   card.innerHTML =
-    '<div class="insp-head">' +
-      '<span class="sw" style="background:' + CATEGORY_COLOR[a.category] + '"></span>' +
-      '<span class="nm">' + a.name + '</span>' +
-      '<span class="tag" data-r="tag"></span>' +
-    '</div>' +
+    '<div class="insp-head"><span class="sw" data-r="sw"></span><span class="nm" data-r="name"></span>' +
+      '<span class="tag" data-r="tag"></span></div>' +
     '<div class="insp-grid">' +
       '<div class="cell"><span class="lb">Popularité</span><span class="vl" data-r="pop"></span></div>' +
-      '<div class="cell"><span class="lb">File</span><span class="vl" data-r="queue"></span></div>' +
+      '<div class="cell"><span class="lb">File / capacité</span><span class="vl" data-r="queue"></span></div>' +
       '<div class="cell"><span class="lb">Revenu / tick</span><span class="vl" data-r="rev"></span></div>' +
-      '<div class="cell"><span class="lb">Entretien</span><span class="vl" data-r="upk"></span></div>' +
+      '<div class="cell"><span class="lb">Charges / tick</span><span class="vl" data-r="upk"></span></div>' +
       '<div class="cell"><span class="lb">Tours servis</span><span class="vl" data-r="served"></span></div>' +
       '<div class="cell"><span class="lb">Total encaissé</span><span class="vl" data-r="total"></span></div>' +
     '</div>' +
+    '<div class="meter" style="margin-bottom:9px"><span class="lb" style="color:var(--dim);font-size:9.5px;' +
+      'text-transform:uppercase;letter-spacing:.5px">Usure</span>' +
+      '<span class="bar"><i data-r="wearbar" style="background:#f87171"></i></span>' +
+      '<span class="n" data-r="wearn"></span></div>' +
     '<div class="insp-act">' +
+      '<div class="line" data-r="repairline" hidden><span class="t" style="color:#ffb4b4">En panne' +
+        '<small data-r="repairhint"></small></span><button class="mini alert" data-act="repair"></button></div>' +
       '<div class="line"><span class="t">Prix du tour<small data-r="pricehint"></small></span>' +
         '<button class="mini" data-act="price-">−1 €</button>' +
         '<span class="vl" data-r="price" style="min-width:38px;text-align:right"></span>' +
@@ -1476,63 +2104,130 @@ function buildInspector(a) {
       '<div class="line"><span class="t">Toit<small data-r="roofhint"></small></span>' +
         '<button class="mini" data-act="roof"></button></div>' +
       '<div class="line"><span class="t">Rénovation<small>+' + fmt2(UPGRADE.renovate.bump) +
-        ' de popularité, immédiat</small></span>' +
-        '<button class="mini" data-act="reno"></button></div>' +
-      '<div class="line" style="margin-top:2px">' +
-        '<span class="t">Investi : <span data-r="invested"></span></span>' +
+        ' de popularité, immédiat</small></span><button class="mini" data-act="reno"></button></div>' +
+      '<div class="line"><span class="t">Révision<small>remet l’usure à zéro, évite la panne</small></span>' +
+        '<button class="mini" data-act="service"></button></div>' +
+      '<div class="line" style="margin-top:2px"><span class="t">Investi : <span data-r="invested"></span></span>' +
         '<button class="mini danger" data-act="del">Démolir</button></div>' +
     '</div>';
+  bindInspector(card, (act, obj) => {
+    if (act === 'price+') changePrice(obj, 1);
+    else if (act === 'price-') changePrice(obj, -1);
+    else if (act === 'cap') upgradeCapacity(obj);
+    else if (act === 'roof') buildRoof(obj);
+    else if (act === 'reno') renovate(obj);
+    else if (act === 'service') serviceAttraction(obj);
+    else if (act === 'repair') repairNow(obj);
+    else if (act === 'del') removeAttraction(obj.id);
+  });
+}
 
+function buildStaffInspector() {
+  const card = el('inspector');
+  card.innerHTML =
+    '<div class="insp-head"><span class="sw" data-r="sw"></span><span class="nm" data-r="name"></span>' +
+      '<span class="tag" data-r="tag"></span></div>' +
+    '<p class="note" data-r="desc"></p>' +
+    '<div class="insp-grid" style="margin-top:9px">' +
+      '<div class="cell"><span class="lb">Salaire / tick</span><span class="vl" data-r="salary"></span></div>' +
+      '<div class="cell"><span class="lb">Réparations</span><span class="vl" data-r="repairs"></span></div>' +
+      '<div class="cell"><span class="lb">Depuis</span><span class="vl" data-r="since"></span></div>' +
+      '<div class="cell"><span class="lb">Occupation</span><span class="vl" data-r="busy"></span></div>' +
+    '</div>' +
+    '<div class="insp-act"><div class="line"><span class="t">Glissez-le sur le parc pour changer sa zone</span>' +
+      '<button class="mini danger" data-act="fire">Licencier</button></div></div>';
+  bindInspector(card, (act, obj) => { if (act === 'fire') fireStaff(obj.id); });
+}
+
+function buildVisitorInspector() {
+  const card = el('inspector');
+  card.innerHTML =
+    '<div class="insp-head"><span class="sw" data-r="sw"></span><span class="nm" data-r="name"></span>' +
+      '<span class="tag" data-r="tag"></span></div>' +
+    '<div class="insp-grid">' +
+      '<div class="cell"><span class="lb">Satisfaction</span><span class="vl" data-r="sat"></span></div>' +
+      '<div class="cell"><span class="lb">Porte-monnaie</span><span class="vl" data-r="wallet"></span></div>' +
+      '<div class="cell"><span class="lb">Faim</span><span class="vl" data-r="hunger"></span></div>' +
+      '<div class="cell"><span class="lb">Énergie</span><span class="vl" data-r="energy"></span></div>' +
+      '<div class="cell"><span class="lb">Tours faits</span><span class="vl" data-r="rides"></span></div>' +
+      '<div class="cell"><span class="lb">Dans le parc</span><span class="vl" data-r="age"></span></div>' +
+    '</div>' +
+    '<div class="group-label">Score de chaque attraction pour lui</div>' +
+    '<table class="breakdown"><tbody data-r="scores"></tbody></table>' +
+    '<p class="note" data-r="explain"></p>' +
+    '<div class="insp-act" style="margin-top:8px"><div class="line">' +
+      '<span class="t">Seuil d’attirance : ' + '<span data-r="thr"></span></span>' +
+      '<button class="mini" data-act="unfollow">Ne plus suivre</button></div></div>';
+  bindInspector(card, (act) => { if (act === 'unfollow') { state.selectedVisitorId = null; renderPanels(); updateHint(); } });
+}
+
+function bindInspector(card, handler) {
   inspRefs = {};
   card.querySelectorAll('[data-r]').forEach((n) => { inspRefs[n.dataset.r] = n; });
   card.querySelectorAll('[data-act]').forEach((b) => { inspRefs['btn-' + b.dataset.act] = b; });
-
   card.onclick = (e) => {
     const act = e.target.dataset && e.target.dataset.act;
     if (!act) return;
-    const cur = state.attractions.find((x) => x.id === state.selectedId);
-    if (!cur) return;
-    if (act === 'price+') changePrice(cur, 1);
-    else if (act === 'price-') changePrice(cur, -1);
-    else if (act === 'cap') upgradeCapacity(cur);
-    else if (act === 'roof') buildRoof(cur);
-    else if (act === 'reno') renovate(cur);
-    else if (act === 'del') removeAttraction(cur.id);
+    const t = inspectorTarget();
+    if (t) handler(act, t.obj);
   };
   card.hidden = false;
 }
 
 function renderInspector() {
   const card = el('inspector');
-  const a = state.attractions.find((x) => x.id === state.selectedId);
-  if (!a) { card.hidden = true; inspectorId = null; return; }
-  if (inspectorId !== a.id) { inspectorId = a.id; buildInspector(a); }
-  const bp = BLUEPRINTS[a.type];
-  const r = inspRefs;
+  const t = inspectorTarget();
+  if (!t) { card.hidden = true; inspectorKind = null; inspectorId = null; return; }
+  const id = t.kind === 'visitor' ? 'v' + t.obj.id : 'o' + t.obj.id;
+  if (inspectorKind !== t.kind || inspectorId !== id) {
+    inspectorKind = t.kind; inspectorId = id;
+    if (t.kind === 'attraction') buildAttractionInspector();
+    else if (t.kind === 'staff') buildStaffInspector();
+    else buildVisitorInspector();
+  }
+  if (t.kind === 'attraction') renderAttractionInspector(t.obj);
+  else if (t.kind === 'staff') renderStaffInspector(t.obj);
+  else renderVisitorInspector(t.obj);
+}
 
+function renderAttractionInspector(a) {
+  const bp = BLUEPRINTS[a.type], r = inspRefs;
+  r.sw.style.background = CATEGORY_COLOR[a.category];
+  r.name.textContent = a.name;
   r.tag.textContent = CATEGORY_LABEL[a.category] + (a.outdoor ? ' · extérieur' : ' · couvert');
   r.pop.textContent = fmt2(a.popularity);
-  r.queue.textContent = a.queue + ' en file · ' + a.riders.length + '/' + a.capacity + ' dessus';
+  r.queue.textContent = a.queue + ' · ' + a.riders.length + '/' + a.capacity;
   r.rev.textContent = fmt1(a.lastRevenue) + ' €';
-  r.upk.textContent = (CONFIG.upkeepMultiplier > 0 ? fmt1(a.upkeep * CONFIG.upkeepMultiplier) + ' €' : 'désactivé');
+  r.upk.textContent = CONFIG.upkeepMultiplier > 0 ? fmt1(a.upkeep * CONFIG.upkeepMultiplier) + ' €' : '—';
   r.served.textContent = String(a.served);
   r.total.textContent = fmtMoney(a.totalRevenue) + ' €';
   r.price.textContent = a.price + ' €';
   r.invested.textContent = fmtMoney(a.invested) + ' €';
-  r.pricehint.textContent = CONFIG.priceSensitivity
-    ? 'base ' + a.basePrice + ' € · chaque € au-dessus coûte ' + fmt2(CONFIG.priceSensitivity) + ' d’attirance'
-    : 'sensibilité au prix désactivée : augmenter est sans risque';
+  r.wearbar.style.width = (a.wear * 100).toFixed(0) + '%';
+  r.wearn.textContent = CONFIG.breakdownRate > 0 ? (a.wear * 100).toFixed(0) + ' %' : 'off';
 
-  const capCost = upgradeCost(a, 'capacity');
-  const capMaxed = a.capacityBonus >= bp.capMax;
-  r.caphint.textContent = a.capacity + ' places' + (capMaxed ? ' — maximum atteint' :
+  r.repairline.hidden = !a.broken;
+  if (a.broken) {
+    const mech = state.staff.some((s) => s.type === 'mecanicien');
+    r.repairhint.textContent = mech
+      ? 'un mécanicien est en route (' + (a.repairProgress * 100).toFixed(0) + ' %)'
+      : 'aucun mécanicien dans le parc';
+    r['btn-repair'].textContent = 'Réparer · ' + fmtMoney(upgradeCost(a, 'repair')) + ' €';
+    r['btn-repair'].disabled = state.money < upgradeCost(a, 'repair');
+  }
+
+  r.pricehint.textContent = CONFIG.priceSensitivity
+    ? 'base ' + a.basePrice + ' € · chaque € en plus coûte ' + fmt2(CONFIG.priceSensitivity) + ' d’attirance'
+    : 'sensibilité au prix désactivée';
+  const capCost = upgradeCost(a, 'capacity'), capMaxed = a.capacityBonus >= bp.capMax;
+  r.caphint.textContent = a.capacity + ' places' + (capMaxed ? ' — maximum' :
     ' → ' + (a.capacity + UPGRADE.capacity.step) + ', moins d’attente');
   r['btn-cap'].textContent = capMaxed ? 'Max' : '+2 · ' + fmtMoney(capCost) + ' €';
   r['btn-cap'].disabled = capMaxed || state.money < capCost;
 
   const roofCost = upgradeCost(a, 'roof');
   r.roofhint.textContent = a.outdoor
-    ? 'supprime les pénalités de pluie (−' + fmt2(CONFIG.rainScorePenalty) + ' d’attirance, revenu ×' + CONFIG.rainRevenueMultiplier + ')'
+    ? 'supprime la pénalité de pluie (−' + fmt2(CONFIG.rainScorePenalty) + ' et revenu ×' + CONFIG.rainRevenueMultiplier + ')'
     : 'déjà couverte : la pluie n’a aucun effet';
   r['btn-roof'].textContent = a.outdoor ? fmtMoney(roofCost) + ' €' : 'Fait';
   r['btn-roof'].disabled = !a.outdoor || state.money < roofCost;
@@ -1540,23 +2235,78 @@ function renderInspector() {
   const renoCost = upgradeCost(a, 'renovate');
   r['btn-reno'].textContent = fmtMoney(renoCost) + ' €';
   r['btn-reno'].disabled = state.money < renoCost || a.popularity >= 1;
+
+  const svcCost = upgradeCost(a, 'service');
+  r['btn-service'].textContent = fmtMoney(svcCost) + ' €';
+  r['btn-service'].disabled = state.money < svcCost || a.wear <= 0 || CONFIG.breakdownRate <= 0;
+}
+
+function renderStaffInspector(s) {
+  const st = STAFF_TYPES[s.type], r = inspRefs;
+  r.sw.style.background = st.color;
+  r.name.textContent = st.name;
+  r.tag.textContent = 'personnel';
+  r.desc.textContent = st.desc;
+  r.salary.textContent = fmt1(s.salary * CONFIG.staffSalary) + ' €';
+  r.repairs.textContent = String(s.repairs);
+  r.since.textContent = 't' + s.hiredAt;
+  if (s.type === 'mecanicien') {
+    const t = s.targetId ? attractionById(s.targetId) : null;
+    r.busy.textContent = t ? 'vers ' + t.name : 'en attente';
+  } else {
+    const n = state.visitors.filter((v) => dist(s, v) <= CONFIG.entertainRadius).length;
+    r.busy.textContent = CONFIG.entertainBoost > 0 ? n + ' visiteur(s)' : 'désactivé';
+  }
+}
+
+function renderVisitorInspector(v) {
+  const r = inspRefs, trait = TRAITS[v.trait];
+  r.sw.style.background = trait.color;
+  r.name.textContent = 'Visiteur #' + v.id;
+  r.tag.textContent = trait.label;
+  r.sat.textContent = fmt2(v.satisfaction);
+  r.wallet.textContent = isFinite(v.wallet) ? fmt1(v.wallet) + ' €' : 'illimité';
+  r.hunger.textContent = CONFIG.hungerRate > 0 ? (v.hunger * 100).toFixed(0) + ' %' : '—';
+  r.energy.textContent = CONFIG.energyDrain > 0 ? (v.energy * 100).toFixed(0) + ' %' : '—';
+  r.rides.textContent = String(v.rides);
+  r.age.textContent = (state.ticks - v.bornTick) + ' ticks';
+  r.thr.textContent = fmt2(CONFIG.scoreThreshold);
+
+  const rows = state.attractions.map((a) => ({ a, b: scoreBreakdown(v, a) }));
+  rows.sort((p, q) => q.b.total - p.b.total);
+  const chosen = v.targetId;
+  r.scores.innerHTML = rows.map(({ a, b }) => {
+    const win = a.id === chosen;
+    const out = !b.eligible || b.total <= CONFIG.scoreThreshold;
+    const why = !b.available ? 'panne' : !b.affordable ? 'trop cher' : '';
+    return '<tr class="' + (win ? 'win' : out ? 'out' : '') + '">' +
+      '<td>' + (win ? '▸ ' : '') + a.name + (why ? ' <span style="color:#f87171">(' + why + ')</span>' : '') + '</td>' +
+      '<td>' + fmt2(b.base) + '</td><td>' + fmt2(b.queuePen + b.rainPen + b.pricePen) + '</td>' +
+      '<td>' + fmt2(b.distPen) + '</td><td><b>' + fmt2(b.total) + '</b></td></tr>';
+  }).join('') +
+    '<tr class="total"><td colspan="5" style="color:var(--dim);font-size:9.5px;text-align:left">' +
+    'affinité×popularité · file+pluie+prix · distance · total</td></tr>';
+
+  const best = rows[0];
+  r.explain.innerHTML = !best ? 'Aucune attraction dans le parc.'
+    : best.b.total > CONFIG.scoreThreshold
+      ? 'Meilleur choix : <b>' + best.a.name + '</b> à ' + fmt2(best.b.total) + '.'
+      : 'Rien au-dessus du seuil : il erre, puis partira au bout de ' + CONFIG.wanderPatience + ' ticks.';
 }
 
 /* ---------- Légende ------------------------------------------------------- */
 function renderLegend() {
   let rows = [];
-  if (dotMode === 'state') {
-    rows = Object.keys(STATE_LABELS).map((k) => [STATE_COLORS[k], STATE_LABELS[k]]);
-  } else if (dotMode === 'trait') {
-    rows = TRAIT_KEYS.map((k) => [TRAITS[k].color, TRAITS[k].label + ' (file ≤ ' + TRAITS[k].queueTolerance + ')']);
-  } else {
-    rows = [[satColor(0), 'satisfaction 0'], [satColor(0.5), 'satisfaction 0.5'], [satColor(1), 'satisfaction 1']];
-  }
+  if (dotMode === 'state') rows = Object.keys(STATE_LABELS).map((k) => [STATE_COLORS[k], STATE_LABELS[k]]);
+  else if (dotMode === 'trait') rows = TRAIT_KEYS.map((k) => [TRAITS[k].color, TRAITS[k].label + ' (file ≤ ' + TRAITS[k].queueTolerance + ')']);
+  else if (dotMode === 'wallet') rows = [[satColor(0), 'porte-monnaie vide'], [satColor(1), 'plein']];
+  else if (dotMode === 'hunger') rows = [[satColor(0), 'affamé'], [satColor(1), 'rassasié']];
+  else rows = [[satColor(0), 'satisfaction 0'], [satColor(0.5), '0.5'], [satColor(1), '1']];
   legendEl.innerHTML = rows.map((r) =>
     '<div class="row"><span class="dot" style="background:' + r[0] + '"></span>' + r[1] + '</div>').join('');
 }
 
-/* ---------- HUD, table, objectifs, journal, graphe ------------------------ */
+/* ---------- HUD, tables, graphe ------------------------------------------- */
 function renderHUD() {
   hudMoney.textContent = fmtMoney(state.money) + ' €';
   hudMoney.parentElement.classList.toggle('neg', state.money < 0);
@@ -1564,17 +2314,20 @@ function renderHUD() {
   hudWeather.textContent = state.weather === 'rain' ? 'Pluie ☔' : 'Soleil ☀';
   hudWeather.parentElement.className = 'chip weather ' + (state.weather === 'rain' ? 'rain' : 'sun');
   hudTick.textContent = String(state.ticks);
-  const upkeep = CONFIG.upkeepMultiplier > 0;
-  hudNetK.textContent = upkeep ? 'Net/tick' : 'Rev/tick';
-  hudNet.textContent = signed(state.revenueThisTick - state.upkeepThisTick) + ' €';
-  hudNet.parentElement.title = upkeep
-    ? 'Revenu ' + fmt1(state.revenueThisTick) + ' € − entretien ' + fmt1(state.upkeepThisTick) + ' €'
-    : 'Entretien désactivé';
-  const s = avgSatisfaction(), p = avgPopularity();
+  const charges = state.upkeepThisTick + state.salaryThisTick;
+  hudNetK.textContent = charges > 0 ? 'Net/tick' : 'Rev/tick';
+  hudNet.textContent = signed(state.revenueThisTick - charges) + ' €';
+  hudNet.parentElement.title = 'Revenu ' + fmt1(state.revenueThisTick) + ' € − entretien ' +
+    fmt1(state.upkeepThisTick) + ' € − salaires ' + fmt1(state.salaryThisTick) + ' €';
+  const s = avgSatisfaction();
   hudSat.textContent = s === null ? '—' : fmt2(s);
-  hudPop.textContent = p === null ? '—' : fmt2(p);
+  hudRepChip.hidden = CONFIG.reputationDrift <= 0;
+  hudRep.textContent = fmt2(state.reputation);
   hudPromo.hidden = state.marketingTicks <= 0;
   hudPromoV.textContent = state.marketingTicks + ' t';
+  const broken = state.attractions.filter((a) => a.broken).length;
+  hudBroken.hidden = broken === 0;
+  hudBrokenV.textContent = String(broken);
 }
 
 function renderTable() {
@@ -1582,16 +2335,18 @@ function renderTable() {
   tb.innerHTML = '';
   for (const a of state.attractions) {
     const tr = document.createElement('tr');
-    if (a.id === state.selectedId) tr.className = 'sel';
+    tr.className = (a.id === state.selectedId ? 'sel ' : '') + (a.broken ? 'broken' : '');
     tr.innerHTML =
       '<td><span class="nametd"><span class="sw" style="background:' + CATEGORY_COLOR[a.category] + '"></span>' +
-        '<span class="txt" title="' + a.name + '">' + (a.outdoor ? '' : '⌂ ') + a.name + '</span></span></td>' +
-      '<td>' + a.queue + '</td>' +
-      '<td>' + a.riders.length + '/' + a.capacity + '</td>' +
-      '<td><span class="bar" title="' + fmt2(a.popularity) + '"><i style="width:' +
+        '<span class="txt" title="' + a.name + '">' + (a.broken ? '⚠ ' : a.outdoor ? '' : '⌂ ') + a.name + '</span></span></td>' +
+      '<td>' + a.queue + '</td><td>' + a.riders.length + '/' + a.capacity + '</td>' +
+      '<td><span class="bar" title="popularité ' + fmt2(a.popularity) + '"><i style="width:' +
         (a.popularity * 100).toFixed(0) + '%;background:' + CATEGORY_COLOR[a.category] + '"></i></span></td>' +
+      '<td><span class="bar" title="usure ' + (a.wear * 100).toFixed(0) + ' %"><i style="width:' +
+        (a.wear * 100).toFixed(0) + '%;background:#f87171"></i></span></td>' +
       '<td>' + fmt1(a.lastRevenue) + '</td>';
     tr.addEventListener('click', () => {
+      state.selectedVisitorId = null;
       state.selectedId = state.selectedId === a.id ? null : a.id;
       renderPanels(); updateHint();
     });
@@ -1599,21 +2354,38 @@ function renderTable() {
   }
 
   const note = el('attrNote');
-  const a = state.attractions.find((x) => x.id === state.selectedId);
+  const a = attractionById(state.selectedId);
   if (a && a.category === 'food') {
     let neigh = 0, bonus = 0;
     for (const b of state.attractions) {
       if (b === a || b.category === 'food') continue;
       if (dist(a, b) < CONFIG.foodBonusRadius) { neigh++; bonus += b.queue; }
     }
-    note.innerHTML = '<b>Bonus de proximité</b> — ' + neigh + ' voisin(s) non-food à moins de ' +
-      CONFIG.foodBonusRadius + ' u., files cumulées ' + bonus + ' → +' +
-      fmt1(CONFIG.foodBonusRate * bonus) + ' €/tick. Glissez le stand pour tester d’autres emplacements.';
+    note.innerHTML = '<b>Bonus de proximité</b> — ' + neigh + ' voisin(s) à moins de ' +
+      CONFIG.foodBonusRadius + ' u., files cumulées ' + bonus + ' → +' + fmt1(CONFIG.foodBonusRate * bonus) +
+      ' €/tick. Glissez le stand pour tester d’autres emplacements.';
   } else {
-    const totals = state.attractions.reduce((s, x) => s + x.totalRevenue, 0);
-    note.innerHTML = 'Encaissé ' + fmtMoney(totals) + ' €' +
-      (state.totalUpkeep ? ', entretien ' + fmtMoney(state.totalUpkeep) + ' €' : '') +
-      ' · ' + state.totalSpawned + ' entrés · ' + state.totalLeft + ' repartis.';
+    note.innerHTML = 'Encaissé ' + fmtMoney(state.totalRevenue) + ' € · entretien ' +
+      fmtMoney(state.totalUpkeep) + ' € · salaires ' + fmtMoney(state.totalSalary) + ' €.';
+  }
+}
+
+function renderStaffPanel() {
+  el('staffCount').textContent = state.staff.length
+    ? state.staff.length + ' · ' + fmt1(state.salaryThisTick) + ' €/tick'
+    : 'aucun';
+  const note = el('staffNote');
+  const broken = state.attractions.filter((a) => a.broken).length;
+  const mech = state.staff.filter((s) => s.type === 'mecanicien').length;
+  if (CONFIG.breakdownRate <= 0 && CONFIG.entertainBoost <= 0) {
+    note.innerHTML = 'Sans pannes ni boost d’animation, le personnel n’a rien à faire dans ce modèle. ' +
+      'Passez en <b>Complet</b> pour qu’il serve.';
+  } else if (broken && !mech) {
+    note.innerHTML = '<b>' + broken + ' attraction(s) en panne</b> et aucun mécanicien : ' +
+      'la file se disperse à chaque tick.';
+  } else {
+    note.innerHTML = 'Le mécanicien va vers la panne la plus proche — sa position compte. ' +
+      'L’animateur agit dans un rayon de ' + CONFIG.entertainRadius + ' u. autour de lui.';
   }
 }
 
@@ -1629,22 +2401,63 @@ function renderGoals() {
   if (h && h.tagName === 'H2') h.innerHTML = 'Objectifs <em>' + done + ' / ' + GOALS.length + '</em>';
 }
 
+function renderDepartures() {
+  const tb = document.querySelector('#departTable tbody');
+  const total = Object.values(state.departures).reduce((s, n) => s + n, 0);
+  tb.innerHTML = Object.keys(LEAVE_REASONS).map((k) => {
+    const n = state.departures[k] || 0;
+    const pct = total ? (n / total) * 100 : 0;
+    return '<tr><td style="font-family:inherit;text-align:left">' + LEAVE_REASONS[k] + '</td>' +
+      '<td style="width:44%"><span class="bar"><i style="width:' + pct.toFixed(0) +
+      '%;background:#38bdf8"></i></span></td><td>' + n + '</td></tr>';
+  }).join('');
+  const exitSat = state.satisfactionOnExit.length ? mean(state.satisfactionOnExit) : null;
+  el('departNote').innerHTML = total
+    ? total + ' départs · satisfaction moyenne à la sortie <b>' +
+      (exitSat === null ? '—' : fmt2(exitSat)) + '</b>' +
+      (CONFIG.reputationDrift > 0 ? ' — c’est elle qui tire la réputation.' : '.')
+    : 'Personne n’est encore reparti.';
+}
+
+function renderMarketing() {
+  const b = el('marketingBtn');
+  const active = state.marketingTicks > 0;
+  b.textContent = active ? 'Campagne en cours — ' + state.marketingTicks + ' ticks'
+                         : 'Lancer une campagne · ' + fmtMoney(CONFIG.marketingCost) + ' €';
+  b.disabled = active || state.money < CONFIG.marketingCost;
+  el('marketingNote').innerHTML = 'Multiplie le spawn par <b>×' + CONFIG.marketingBoost + '</b> pendant ' +
+    CONFIG.marketingDuration + ' ticks' +
+    (CONFIG.reputationDrift > 0 ? '. La réputation (' + fmt2(state.reputation) +
+      ') pèse aussi sur les arrivées : elle suit la satisfaction des visiteurs qui repartent.' : '.');
+}
+
 function renderLog() {
   const box = el('log');
   if (!box) return;
   box.innerHTML = state.log.map((e) => '<div><span class="t">t' + e.t + '</span> ' + e.msg + '</div>').join('');
 }
 
-function renderMarketing() {
-  const b = el('marketingBtn');
-  const active = state.marketingTicks > 0;
-  b.textContent = active
-    ? 'Campagne en cours — ' + state.marketingTicks + ' ticks'
-    : 'Lancer une campagne · ' + fmtMoney(CONFIG.marketingCost) + ' €';
-  b.disabled = active || state.money < CONFIG.marketingCost;
-  el('marketingNote').innerHTML = 'Multiplie le spawn par <b>×' + CONFIG.marketingBoost +
-    '</b> pendant ' + CONFIG.marketingDuration + ' ticks. Utile pour tester le parc à pleine charge — ' +
-    'hors spec, réglable plus bas.';
+function renderSaveNote() {
+  const info = savedInfo();
+  el('saveNote').innerHTML = info
+    ? 'Sauvegarde : tick <b>' + info.ticks + '</b>, ' + fmtMoney(info.money) + ' €, modèle ' +
+      (PRESETS[info.preset] ? PRESETS[info.preset].label : info.preset) + '.'
+    : 'Aucune sauvegarde locale. Elle reste dans ce navigateur.';
+  el('loadBtn').disabled = !info;
+  el('clearSaveBtn').disabled = !info;
+}
+
+function renderBatch(results, runs, ticks) {
+  const tb = document.querySelector('#batchTable tbody');
+  el('batchTable').hidden = false;
+  tb.innerHTML = BATCH_ROWS.map(([key, label, fmt]) => {
+    const vals = results.map((r) => r[key]);
+    return '<tr><td style="font-family:inherit;text-align:left">' + label + '</td><td><b>' +
+      fmt(mean(vals)) + '</b></td><td>' + fmt(Math.min(...vals)) + '</td><td>' + fmt(Math.max(...vals)) + '</td></tr>';
+  }).join('');
+  el('batchNote').innerHTML = '<b>' + runs + ' runs × ' + ticks + ' ticks</b> avec le modèle « ' +
+    PRESETS[presetKey].label + ' », graines ' + (parseInt(el('seed').value, 10) || 1337) + ' + n×7919. ' +
+    'Le parc affiché n’a pas bougé.';
 }
 
 function renderChart() {
@@ -1659,23 +2472,26 @@ function renderChart() {
   cctx.fillStyle = '#12171f'; cctx.fillRect(0, 0, w, h);
   const hist = state.history;
   if (hist.length < 2) return;
-  const n = hist.length;
-  const X = (i) => (i / (n - 1)) * (w - 2) + 1;
+  const n = hist.length, X = (i) => (i / (n - 1)) * (w - 2) + 1;
 
   cctx.fillStyle = '#3b4f63';
   for (let i = 0; i < n; i++) {
     if (!hist[i].rain) continue;
     cctx.fillRect(X(i), 0, Math.max(1, (w - 2) / (n - 1) + 0.6), h);
   }
+  cctx.fillStyle = 'rgba(248,113,113,.18)';
+  for (let i = 0; i < n; i++) {
+    if (!hist[i].broken) continue;
+    cctx.fillRect(X(i), h - 5, Math.max(1, (w - 2) / (n - 1) + 0.6), 5);
+  }
   const maxNet = Math.max(1, ...hist.map((p) => Math.abs(p.net)));
+  cctx.strokeStyle = '#26303d'; cctx.lineWidth = 1;
+  cctx.beginPath(); cctx.moveTo(1, h - 3 - 0.5 * (h - 8)); cctx.lineTo(w - 1, h - 3 - 0.5 * (h - 8)); cctx.stroke();
   const series = [
     ['#38bdf8', (p) => p.visitors / Math.max(1, CONFIG.maxVisitors)],
     ['#6ee7b7', (p) => (p.net / maxNet + 1) / 2],
     ['#ffc857', (p) => p.sat],
   ];
-  // ligne du zéro pour le net
-  cctx.strokeStyle = '#26303d'; cctx.lineWidth = 1;
-  cctx.beginPath(); cctx.moveTo(1, h - 3 - 0.5 * (h - 8)); cctx.lineTo(w - 1, h - 3 - 0.5 * (h - 8)); cctx.stroke();
   for (const [col, f] of series) {
     cctx.strokeStyle = col; cctx.lineWidth = 1.4; cctx.beginPath();
     for (let i = 0; i < n; i++) {
@@ -1691,15 +2507,23 @@ function renderChart() {
 }
 
 function renderPanels() {
-  renderHUD(); renderTable(); renderInspector(); renderGoals();
-  renderMarketing(); renderChart(); syncBuildButtons();
+  renderHUD(); renderTable(); renderStaffPanel(); renderInspector(); renderGoals();
+  renderMarketing(); renderDepartures(); syncBuildButtons();
+  if (!document.querySelector('[data-pane="analyse"]').hidden) renderChart();
 }
 
 /* ---------- Réglages ------------------------------------------------------ */
 function buildTuning() {
   const g = el('tuneGrid');
   g.innerHTML = '';
-  for (const [key, label, step, specTxt] of TUNABLES) {
+  for (const row of TUNABLES) {
+    if (row[0] === '#') {
+      const h = document.createElement('div');
+      h.className = 'tunegroup'; h.textContent = row[1];
+      g.appendChild(h);
+      continue;
+    }
+    const [key, label, step, specTxt] = row;
     const lb = document.createElement('div');
     lb.className = 'lb';
     lb.innerHTML = label + '<small>' + specTxt + '</small>';
@@ -1715,84 +2539,145 @@ function buildTuning() {
     g.appendChild(lb); g.appendChild(inp);
   }
 }
+function syncTuningInputs() {
+  el('tuneGrid').querySelectorAll('input').forEach((i) => { i.value = String(CONFIG[i.dataset.key]); });
+}
 
 /* ---------- Entrées (souris / tactile) ------------------------------------ */
 canvas.addEventListener('pointerdown', (e) => {
-  if (buildType) { ghost = toWorld(e.clientX, e.clientY); return; }
   const p = toWorld(e.clientX, e.clientY);
-  const a = attractionAt(p);
-  if (!a) { state.selectedId = null; renderPanels(); updateHint(); return; }
-  drag = { a, offX: a.x - p.x, offY: a.y - p.y, startX: a.x, startY: a.y, moved: false, valid: true };
+  if (buildType || hireType) { ghost = p; return; }
+  const a = attractionAt(p), s = a ? null : staffAt(p);
+  const obj = a || s;
+  if (!obj) {
+    const v = visitorAt(p);
+    state.selectedId = null;
+    state.selectedVisitorId = v ? v.id : null;
+    renderPanels(); updateHint();
+    return;
+  }
+  drag = { kind: a ? 'attraction' : 'staff', obj, offX: obj.x - p.x, offY: obj.y - p.y,
+           startX: obj.x, startY: obj.y, moved: false, valid: true };
   canvas.setPointerCapture(e.pointerId);
   stage.classList.add('grabbing');
 });
 
 canvas.addEventListener('pointermove', (e) => {
   const p = toWorld(e.clientX, e.clientY);
-  if (buildType) { ghost = p; return; }
+  if (buildType || hireType) { ghost = p; return; }
   if (drag) {
     const nx = clamp(p.x + drag.offX, 0, WORLD.w), ny = clamp(p.y + drag.offY, 0, WORLD.h);
     if (!drag.moved && Math.hypot(nx - drag.startX, ny - drag.startY) > 0.4) drag.moved = true;
-    drag.a.x = nx; drag.a.y = ny;
-    drag.valid = canPlace(nx, ny, drag.a.type, drag.a.id);
+    drag.obj.x = nx; drag.obj.y = ny;
+    drag.valid = canPlace(nx, ny, drag.kind === 'attraction' ? drag.obj.radius : 1.6,
+                          drag.kind === 'attraction' ? drag.obj.id : undefined);
     return;
   }
-  stage.classList.toggle('grabbable', !!attractionAt(p));
+  stage.classList.toggle('grabbable', !!(attractionAt(p) || staffAt(p)));
 });
 
 canvas.addEventListener('pointerup', (e) => {
-  if (buildType) { const p = toWorld(e.clientX, e.clientY); placeAttraction(p.x, p.y); return; }
+  const p = toWorld(e.clientX, e.clientY);
+  if (buildType) { placeAttraction(p.x, p.y); return; }
+  if (hireType) { hireStaff(hireType, p.x, p.y); return; }
   if (!drag) return;
   stage.classList.remove('grabbing');
-  const a = drag.a;
+  const o = drag.obj;
   if (drag.moved) {
     if (!drag.valid) {
-      a.x = drag.startX; a.y = drag.startY;
-      flashHint('Emplacement invalide — ' + a.name + ' est revenue à sa place.');
+      o.x = drag.startX; o.y = drag.startY;
+      flashHint('Emplacement invalide — retour à la position précédente.');
+    } else if (drag.kind === 'attraction') {
+      logEvent(o.name + ' déplacée' + proximityNote(o));
     } else {
-      logEvent(a.name + ' déplacée' + proximityNote(a));
+      o.homeX = o.x; o.homeY = o.y;
     }
   } else {
-    state.selectedId = state.selectedId === a.id ? null : a.id;
+    state.selectedVisitorId = null;
+    state.selectedId = state.selectedId === o.id ? null : o.id;
   }
   drag = null;
   renderPanels(); updateHint();
 });
 
 canvas.addEventListener('pointercancel', () => {
-  if (drag) { drag.a.x = drag.startX; drag.a.y = drag.startY; drag = null; }
+  if (drag) { drag.obj.x = drag.startX; drag.obj.y = drag.startY; drag = null; }
   stage.classList.remove('grabbing');
 });
 canvas.addEventListener('pointerleave', () => { ghost = null; stage.classList.remove('grabbable'); });
-canvas.addEventListener('contextmenu', (e) => { if (buildType) { e.preventDefault(); selectBuild(null); } });
+canvas.addEventListener('contextmenu', (e) => {
+  if (buildType || hireType) { e.preventDefault(); selectBuild(null); selectHire(null); }
+});
 
 window.addEventListener('keydown', (e) => {
-  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+  if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement ||
+      e.target instanceof HTMLTextAreaElement) return;
   if (e.code === 'Space') { e.preventDefault(); setSpeed(speedMultiplier === 0 ? 1 : 0); }
-  else if (e.key === 'Escape') { selectBuild(null); state.selectedId = null; renderPanels(); updateHint(); }
-  else if (e.key >= '1' && e.key <= '9') {
+  else if (e.key === 'Escape') {
+    selectBuild(null); selectHire(null);
+    state.selectedId = null; state.selectedVisitorId = null;
+    renderPanels(); updateHint();
+  } else if (e.key >= '1' && e.key <= '9') {
     const key = BLUEPRINT_KEYS[Number(e.key) - 1];
     if (key) selectBuild(buildType === key ? null : key);
+  } else {
+    const lower = e.key.toLowerCase();
+    const sk = STAFF_KEYS.find((k) => STAFF_TYPES[k].key === lower);
+    if (sk) selectHire(hireType === sk ? null : sk);
   }
 });
 
 el('dotMode').addEventListener('change', (e) => { dotMode = e.target.value; renderLegend(); });
 el('marketingBtn').addEventListener('click', launchMarketing);
+el('heatReset').addEventListener('click', () => { state.heat.fill(0); });
+el('followBtn').addEventListener('click', () => {
+  if (!state.visitors.length) { flashHint('Aucun visiteur dans le parc.'); return; }
+  const v = state.visitors[Math.floor(Math.random() * state.visitors.length)];
+  state.selectedId = null; state.selectedVisitorId = v.id;
+  document.querySelector('.tabbtn[data-tab="park"]').click();
+  renderPanels(); updateHint();
+});
+el('batchBtn').addEventListener('click', () => {
+  const runs = clamp(parseInt(el('batchRuns').value, 10) || 10, 1, 60);
+  const ticks = clamp(parseInt(el('batchTicks').value, 10) || 400, 50, 4000);
+  runBatch(runs, ticks);
+});
+el('csvBtn').addEventListener('click', () => {
+  const out = el('csvOut');
+  out.value = buildCsv();
+  out.hidden = false; el('csvCopy').hidden = false;
+});
+el('csvCopy').addEventListener('click', async () => {
+  const out = el('csvOut');
+  out.select();
+  try {
+    if (navigator.clipboard) await navigator.clipboard.writeText(out.value);
+    else document.execCommand('copy');
+    el('csvCopy').textContent = 'Copié';
+    setTimeout(() => { el('csvCopy').textContent = 'Copier'; }, 1500);
+  } catch (err) {
+    el('csvCopy').textContent = 'Sélectionné — Ctrl+C';
+  }
+});
 el('resetBtn').addEventListener('click', () => {
-  const seed = parseInt(el('seed').value, 10) || 0;
-  initState(seed);
-  selectBuild(null);
-  inspectorId = null;
-  el('forceWeather').textContent = 'Forcer la pluie'; // initState remet weatherLocked à false
+  initState(parseInt(el('seed').value, 10) || 0);
+  selectBuild(null); selectHire(null);
+  inspectorKind = null; inspectorId = null;
+  el('forceWeather').textContent = 'Forcer la pluie';
   renderPanels(); renderLegend(); renderLog(); updateHint();
 });
 el('forceWeather').addEventListener('click', () => {
   state.weather = state.weather === 'rain' ? 'sun' : 'rain';
   state.weatherLocked = true;
   el('forceWeather').textContent = state.weather === 'rain' ? 'Forcer le soleil' : 'Forcer la pluie';
-  logEvent('Météo forcée : ' + (state.weather === 'rain' ? 'pluie' : 'soleil') +
-    ' (les changements aléatoires sont suspendus)');
+  logEvent('Météo forcée : ' + (state.weather === 'rain' ? 'pluie' : 'soleil') + ' (aléatoire suspendu)');
   renderHUD();
+});
+el('saveBtn').addEventListener('click', saveLocal);
+el('loadBtn').addEventListener('click', loadLocal);
+el('clearSaveBtn').addEventListener('click', () => {
+  try { localStorage.removeItem(SAVE_KEY); } catch (e) { /* stockage indisponible */ }
+  renderSaveNote();
 });
 el('tuneReset').addEventListener('click', () => applyPreset('spec'));
 window.addEventListener('resize', () => { resizeCanvas(); renderChart(); });
@@ -1820,22 +2705,18 @@ function frame(now) {
 /* ---------- Démarrage ----------------------------------------------------- */
 Object.assign(CONFIG, SPEC, PRESETS[presetKey].config);
 initState(parseInt(el('seed').value, 10) || 1337);
-buildSpeedRow();
-buildPresetRow();
-buildRowInit();
-buildTuning();
-renderLegend();
-updateHint();
-resizeCanvas();
-renderPanels();
-renderLog();
+buildSpeedRow(); buildPresetRow(); buildRowInit(); buildTuning();
+renderLegend(); updateHint(); resizeCanvas(); renderPanels(); renderLog(); renderSaveNote();
 if (window.ResizeObserver) new ResizeObserver(() => { resizeCanvas(); renderChart(); }).observe(stage);
 requestAnimationFrame(frame);
 
 // exposé pour le débogage / les scripts de playtest depuis la console
-window.PARK = { get state() { return state; }, CONFIG, SPEC, PRESETS, TRAITS, BLUEPRINTS, GOALS,
-                tick, setSpeed, initState, applyPreset, destinationScore, satisfactionTarget,
-                upgradeCapacity, buildRoof, renovate, changePrice, launchMarketing, removeAttraction };
+window.PARK = {
+  get state() { return state; }, CONFIG, SPEC, PRESETS, TRAITS, BLUEPRINTS, STAFF_TYPES, GOALS,
+  tick, setSpeed, initState, applyPreset, scoreBreakdown, destinationScore, satisfactionTarget,
+  upgradeCapacity, buildRoof, renovate, serviceAttraction, repairNow, changePrice,
+  hireStaff, fireStaff, launchMarketing, removeAttraction, runOne, saveLocal, loadLocal, buildCsv,
+};
 </script>
 </body>
 </html>
