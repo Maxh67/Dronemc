@@ -9,9 +9,11 @@
     --bg: #0e1116;
     --panel: #161b23;
     --panel-2: #1d232d;
+    --panel-3: #232b36;
     --line: #2a323f;
     --text: #e6ebf2;
     --muted: #8d9aad;
+    --dim: #5f6b7d;
     --accent: #6ee7b7;
     --thrill: #ff6b5e;
     --family: #6ea8ff;
@@ -20,6 +22,8 @@
     --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   }
   * { box-sizing: border-box; }
+  /* .chip/.card posent leur propre display : il doit rester battu par [hidden] */
+  [hidden] { display: none !important; }
   html, body { height: 100%; }
   body {
     margin: 0;
@@ -35,10 +39,7 @@
     padding: 10px 16px; border-bottom: 1px solid var(--line);
     background: var(--panel);
   }
-  header h1 {
-    margin: 0; font-size: 14px; font-weight: 650; letter-spacing: .2px;
-    white-space: nowrap;
-  }
+  header h1 { margin: 0; font-size: 14px; font-weight: 650; letter-spacing: .2px; white-space: nowrap; }
   header h1 span { color: var(--muted); font-weight: 400; }
   #hud { display: flex; gap: 8px; flex-wrap: wrap; margin-left: auto; }
   .chip {
@@ -49,18 +50,23 @@
   .chip .k { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .6px; }
   .chip .v { font-family: var(--mono); font-size: 13px; font-variant-numeric: tabular-nums; }
   .chip.money .v { color: var(--accent); }
+  .chip.money.neg .v { color: var(--warn); }
   .chip.weather.rain .v { color: #7dd3fc; }
   .chip.weather.sun .v { color: var(--food); }
+  .chip.promo { border-color: #4b7a63; background: #1b2a24; }
+  .chip.promo .v { color: var(--accent); }
 
   main { flex: 1; display: flex; min-height: 0; }
   #stage { position: relative; flex: 1; min-width: 0; background: #0b0f14; }
-  #park { display: block; width: 100%; height: 100%; }
+  #park { display: block; width: 100%; height: 100%; touch-action: none; }
   #stage.building { cursor: crosshair; }
+  #stage.grabbable { cursor: grab; }
+  #stage.grabbing { cursor: grabbing; }
   #overlayHint {
     position: absolute; left: 12px; bottom: 12px;
     background: rgba(13,17,23,.86); border: 1px solid var(--line);
     border-radius: 6px; padding: 6px 10px; color: var(--muted);
-    pointer-events: none; max-width: 60%;
+    pointer-events: none; max-width: 62%;
   }
   #overlayHint b { color: var(--text); }
   #legend {
@@ -73,30 +79,45 @@
   #legend .dot { width: 8px; height: 8px; border-radius: 50%; }
 
   aside {
-    width: 340px; flex: 0 0 340px; border-left: 1px solid var(--line);
-    background: var(--panel); overflow-y: auto; padding: 12px; display: flex;
-    flex-direction: column; gap: 12px;
+    width: 348px; flex: 0 0 348px; border-left: 1px solid var(--line);
+    background: var(--panel); overflow-y: auto; padding: 12px;
+    display: flex; flex-direction: column; gap: 12px;
   }
   .card { background: var(--panel-2); border: 1px solid var(--line); border-radius: 8px; padding: 10px; }
   .card > h2 {
     margin: 0 0 8px; font-size: 10px; text-transform: uppercase;
     letter-spacing: .8px; color: var(--muted); font-weight: 600;
+    display: flex; justify-content: space-between; align-items: baseline; gap: 8px;
   }
+  .card > h2 em { font-style: normal; color: var(--dim); text-transform: none; letter-spacing: 0; font-weight: 400; }
+  .card.focus { border-color: #3c4a5e; box-shadow: 0 0 0 1px #232d3a inset; }
+
   .btnrow { display: flex; gap: 6px; flex-wrap: wrap; }
   button {
-    font: inherit; color: var(--text); background: #232b36;
+    font: inherit; color: var(--text); background: var(--panel-3);
     border: 1px solid var(--line); border-radius: 6px;
     padding: 6px 10px; cursor: pointer;
   }
-  button:hover { background: #2b3542; }
+  button:hover:not(:disabled) { background: #2b3542; }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  button:disabled { opacity: .42; cursor: not-allowed; }
   button.active { background: #2f5d4b; border-color: var(--accent); color: #d6fff0; }
-  button.build { flex: 1; text-align: left; display: flex; align-items: center; gap: 8px; }
+  button.mini { padding: 3px 7px; font-size: 11px; line-height: 1.25; }
+  button.danger { border-color: #5d3232; color: #ffbdbd; }
+  button.danger:hover:not(:disabled) { background: #3a2424; }
+  button.wide { flex: 1; }
+
+  .group-label {
+    color: var(--dim); font-size: 9.5px; text-transform: uppercase;
+    letter-spacing: .7px; margin: 8px 0 4px; font-weight: 600;
+  }
+  .group-label:first-child { margin-top: 0; }
+  button.build { width: 100%; text-align: left; display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
   button.build .sw { width: 10px; height: 10px; border-radius: 3px; flex: 0 0 10px; }
   button.build .nm { flex: 1; }
-  button.build .pr { font-family: var(--mono); color: var(--muted); font-size: 11px; }
+  button.build .pr { font-family: var(--mono); color: var(--muted); font-size: 11px; white-space: nowrap; }
   button.build.active .pr { color: #d6fff0; }
-  button.build:disabled { opacity: .45; cursor: not-allowed; }
-  button.mini { padding: 2px 6px; font-size: 11px; line-height: 1.2; }
+  .roofed { color: #a9b7c9; font-size: 10px; }
 
   table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
   th { color: var(--muted); font-weight: 500; text-align: right; padding: 2px 3px; font-size: 10px;
@@ -104,23 +125,51 @@
   th:first-child { text-align: left; }
   td { padding: 3px; text-align: right; font-family: var(--mono); font-variant-numeric: tabular-nums; }
   td:first-child { text-align: left; font-family: inherit; }
-  tbody tr { border-top: 1px solid var(--line); }
+  tbody tr { border-top: 1px solid var(--line); cursor: pointer; }
+  tbody tr:hover { background: #1f2833; }
   tbody tr.sel { background: #222c39; }
   .nametd { display: flex; align-items: center; gap: 6px; }
   .nametd .sw { width: 8px; height: 8px; border-radius: 2px; flex: 0 0 8px; }
-  .nametd .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 96px; }
+  .nametd .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 104px; }
   .bar { position: relative; height: 4px; background: #2a323f; border-radius: 2px; overflow: hidden; min-width: 34px; }
-  .bar > i { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
+  .bar > i { position: absolute; inset: 0 auto 0 0; }
+
+  /* --- inspecteur d'attraction --- */
+  #inspector .insp-head { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  #inspector .insp-head .sw { width: 12px; height: 12px; border-radius: 3px; flex: 0 0 12px; }
+  #inspector .insp-head .nm { font-weight: 650; font-size: 13.5px; }
+  #inspector .insp-head .tag {
+    margin-left: auto; font-size: 10px; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 4px; padding: 1px 5px;
+  }
+  .insp-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px 10px; margin-bottom: 9px; }
+  .insp-grid .cell { display: flex; flex-direction: column; gap: 1px; }
+  .insp-grid .lb { color: var(--dim); font-size: 9.5px; text-transform: uppercase; letter-spacing: .5px; }
+  .insp-grid .vl { font-family: var(--mono); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .insp-act { display: flex; flex-direction: column; gap: 5px; }
+  .insp-act .line { display: flex; align-items: center; gap: 6px; }
+  .insp-act .line > .t { flex: 1; color: var(--muted); font-size: 11.5px; }
+  .insp-act .line > .t small { display: block; color: var(--dim); font-size: 10px; }
+
+  /* --- objectifs --- */
+  #goals { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 3px; }
+  #goals li { display: flex; align-items: center; gap: 7px; font-size: 11.5px; color: var(--muted); }
+  #goals li .mk {
+    width: 13px; height: 13px; border-radius: 4px; border: 1px solid var(--line);
+    flex: 0 0 13px; display: grid; place-items: center; font-size: 9px; color: transparent;
+  }
+  #goals li.done { color: var(--text); }
+  #goals li.done .mk { background: #2f5d4b; border-color: var(--accent); color: #d6fff0; }
 
   label.field { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   label.field .lb { color: var(--muted); font-size: 11px; }
-  select, input[type=number], input[type=text] {
-    font: inherit; background: #232b36; color: var(--text);
+  select, input[type=number] {
+    font: inherit; background: var(--panel-3); color: var(--text);
     border: 1px solid var(--line); border-radius: 5px; padding: 3px 6px;
   }
   input[type=number] { width: 74px; font-family: var(--mono); text-align: right; }
   input[type=checkbox] { accent-color: var(--accent); }
-  .checkrow { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11.5px; margin-top: 6px; }
+  .checkrow { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 11.5px; margin-top: 8px; }
 
   details.tuning summary {
     cursor: pointer; color: var(--muted); font-size: 10px; text-transform: uppercase;
@@ -130,7 +179,7 @@
   details.tuning[open] summary::before { content: "▾ "; }
   .tunegrid { display: grid; grid-template-columns: 1fr auto; gap: 4px 8px; margin-top: 8px; align-items: center; }
   .tunegrid .lb { color: var(--muted); font-size: 11px; }
-  .tunegrid .lb small { display: block; color: #5f6b7d; font-size: 9.5px; font-family: var(--mono); }
+  .tunegrid .lb small { display: block; color: var(--dim); font-size: 9.5px; font-family: var(--mono); }
 
   #chart { width: 100%; height: 96px; display: block; border-radius: 5px; background: #12171f; }
   .chartkey { display: flex; gap: 10px; margin-top: 6px; color: var(--muted); font-size: 10.5px; flex-wrap: wrap; }
@@ -139,14 +188,16 @@
   #log { max-height: 130px; overflow-y: auto; font-family: var(--mono); font-size: 10.5px; color: var(--muted); }
   #log div { padding: 1px 0; border-bottom: 1px solid #1c222b; }
   #log b { color: var(--text); font-weight: 500; }
-  #log .t { color: #5f6b7d; }
+  #log .t { color: var(--dim); }
 
-  .note { color: var(--muted); font-size: 11px; margin: 6px 0 0; }
+  .note { color: var(--muted); font-size: 11px; margin: 7px 0 0; }
+  .note b { color: var(--text); font-weight: 500; }
   kbd {
-    font-family: var(--mono); font-size: 10px; background: #232b36;
+    font-family: var(--mono); font-size: 10px; background: var(--panel-3);
     border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; padding: 0 4px;
   }
 
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
   @media (max-width: 900px) {
     #legend { padding: 5px 7px; gap: 1px; }
     #legend .row { font-size: 10px; }
@@ -166,9 +217,10 @@
       <div class="chip"><span class="k">Visiteurs</span><span class="v" id="hudVisitors">0</span></div>
       <div class="chip weather sun"><span class="k">Météo</span><span class="v" id="hudWeather">Soleil</span></div>
       <div class="chip"><span class="k">Tick</span><span class="v" id="hudTick">0</span></div>
-      <div class="chip"><span class="k">Rev/tick</span><span class="v" id="hudRev">0</span></div>
+      <div class="chip"><span class="k" id="hudNetK">Net/tick</span><span class="v" id="hudNet">0</span></div>
       <div class="chip"><span class="k">Satisf.</span><span class="v" id="hudSat">—</span></div>
       <div class="chip"><span class="k">Popul.</span><span class="v" id="hudPop">—</span></div>
+      <div class="chip promo" id="hudPromo" hidden><span class="k">Campagne</span><span class="v" id="hudPromoV">0</span></div>
     </div>
   </header>
 
@@ -181,27 +233,48 @@
 
     <aside>
       <div class="card">
-        <h2>Vitesse</h2>
-        <div class="btnrow" id="speedRow"></div>
-        <p class="note"><kbd>espace</kbd> pause · <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> construire · <kbd>échap</kbd> annuler</p>
+        <h2>Règles du bac à sable</h2>
+        <div class="btnrow" id="presetRow"></div>
+        <p class="note" id="presetNote"></p>
       </div>
 
       <div class="card">
-        <h2>Construire — cliquez ensuite sur le parc</h2>
-        <div class="btnrow" id="buildRow" style="flex-direction:column"></div>
+        <h2>Vitesse</h2>
+        <div class="btnrow" id="speedRow"></div>
+        <p class="note"><kbd>espace</kbd> pause · <kbd>1</kbd>…<kbd>8</kbd> construire · <kbd>échap</kbd> annuler · glissez une attraction pour la déplacer</p>
+      </div>
+
+      <div class="card">
+        <h2>Construire <em>puis cliquez sur le parc</em></h2>
+        <div id="buildRow"></div>
         <div class="checkrow">
           <input type="checkbox" id="showLinks" checked />
-          <label for="showLinks">Afficher les liens de proximité (rayon 8 u. des stands)</label>
+          <label for="showLinks">Afficher les liens de proximité (rayon 8 u.)</label>
         </div>
+      </div>
+
+      <div class="card focus" id="inspector" hidden></div>
+
+      <div class="card">
+        <h2>Direction du parc</h2>
+        <div class="btnrow">
+          <button id="marketingBtn" class="wide">Lancer une campagne</button>
+        </div>
+        <p class="note" id="marketingNote"></p>
       </div>
 
       <div class="card">
         <h2>Attractions</h2>
         <table id="attrTable">
-          <thead><tr><th>Nom</th><th>File</th><th>Dessus</th><th>Popul.</th><th>Rev/t</th><th></th></tr></thead>
+          <thead><tr><th>Nom</th><th>File</th><th>Dessus</th><th>Popul.</th><th>Rev/t</th></tr></thead>
           <tbody></tbody>
         </table>
         <p class="note" id="attrNote"></p>
+      </div>
+
+      <div class="card">
+        <h2>Objectifs</h2>
+        <ul id="goals"></ul>
       </div>
 
       <div class="card">
@@ -209,7 +282,7 @@
         <canvas id="chart"></canvas>
         <div class="chartkey">
           <span><i style="background:#38bdf8"></i>visiteurs</span>
-          <span><i style="background:#6ee7b7"></i>revenu/tick</span>
+          <span><i style="background:#6ee7b7"></i>net/tick</span>
           <span><i style="background:#ffc857"></i>satisfaction</span>
           <span><i style="background:#3b4f63"></i>pluie</span>
         </div>
@@ -262,8 +335,6 @@
 /* =============================================================================
    Park Tycoon — prototype de playtest (fichier autonome, aucune dépendance).
    Objectif : valider l'équilibrage de la simulation, pas le rendu.
-   Toutes les règles chiffrées viennent de la spec et sont regroupées dans SPEC /
-   CONFIG ci-dessous, modifiables à chaud depuis le panneau « Réglages ».
 
    Où trouver chaque règle de la spec (pour le portage Swift) :
      traits & tolérances de file ......... TRAITS
@@ -275,11 +346,11 @@
      météo ............................... étape 6 de tick()
      boucle (spawn → agir → files → …) ... tick()
 
-   Seuls ajouts hors spec, tous signalés : wanderPatience (combien de ticks
-   d'errance avant de partir, la spec dit « erre puis part » sans chiffre),
-   maxVisitDuration (désactivé par défaut), les capacités par attraction, et un
-   coût de construction — ce dernier ne touche que le compteur d'argent, pas la
-   dynamique de la simulation.
+   Deux jeux de règles, commutables dans le panneau « Règles du bac à sable » :
+     · Spec pure — strictement les règles ci-dessus, rien d'autre.
+     · Jouable   — ajoute entretien, sensibilité au prix et durée de visite, pour
+                   que les décisions du joueur aient des conséquences.
+   Les extensions sont toutes dans EXTENSIONS et marquées « hors spec ».
    ========================================================================== */
 
 /* ---------- Règles chiffrées (valeurs de la spec) -------------------------- */
@@ -298,19 +369,41 @@ const SPEC = {
   foodBonusRadius:          8,     // unités
   rainRevenueMultiplier:    0.60,  // extérieur sous la pluie
   weatherChangeTicks:       40,    // changement ~toutes les N ticks
-  wanderPatience:           5,     // ticks d'errance infructueuse avant de partir
   startingMoney:            10000,
-  // HORS SPEC, désactivé par défaut (0). La spec ne fait partir un visiteur que
-  // s'il ne trouve rien d'assez attirant : le parc sature donc à maxVisitors et
-  // presque personne ne repart. Ce curseur permet de tester une durée de visite.
-  maxVisitDuration:         0,
+  // la spec dit « erre puis part » sans chiffrer : combien de ticks d'errance
+  wanderPatience:           5,
+  // extensions, neutres par défaut (voir PRESETS)
+  upkeepMultiplier:         0,     // hors spec : entretien par tick
+  priceSensitivity:         0,     // hors spec : pénalité par € au-dessus du prix de base
+  maxVisitDuration:         0,     // hors spec : 0 = visite illimitée
+  marketingBoost:           1.8,   // hors spec : multiplicateur de spawn pendant une campagne
+  marketingDuration:        60,
+  marketingCost:            1500,
 };
 const CONFIG = Object.assign({}, SPEC);
+
+const PRESETS = {
+  spec: {
+    label: 'Spec pure',
+    note: 'Strictement les règles de la spec. Le parc sature à ' +
+          '<b>60 visiteurs</b> et personne ne repart : les leviers économiques ' +
+          'deviennent inertes, mais les formules sont vérifiables telles quelles.',
+    config: { upkeepMultiplier: 0, priceSensitivity: 0, maxVisitDuration: 0 },
+  },
+  play: {
+    label: 'Jouable',
+    note: 'Ajoute trois règles <b>hors spec</b> : entretien par tick, prix qui ' +
+          'compte dans le choix des visiteurs, et durée de visite (140 ticks) ' +
+          'pour créer du renouvellement. C\'est le mode où vos décisions pèsent.',
+    config: { upkeepMultiplier: 1, priceSensitivity: 0.04, maxVisitDuration: 140 },
+  },
+};
+let presetKey = 'play';
 
 const TUNABLES = [
   ['spawnBase',                'Spawn (base)',            0.01, '0.35'],
   ['maxVisitors',              'Visiteurs max',           1,    '60'],
-  ['scoreThreshold',           'Seuil d’attirance',  0.01, '0.15'],
+  ['scoreThreshold',           'Seuil d’attirance',       0.01, '0.15'],
   ['queueScorePenalty',        'Pénalité file (score)',   0.01, '0.08 / visiteur'],
   ['rainScorePenalty',         'Pénalité pluie (score)',  0.05, '0.3'],
   ['distancePenalty',          'Pénalité distance',       0.005,'0.01 / unité'],
@@ -323,23 +416,28 @@ const TUNABLES = [
   ['rainRevenueMultiplier',    'Revenu pluie (ext.)',     0.05, '×0.6'],
   ['weatherChangeTicks',       'Météo — période',         5,    '~40 ticks'],
   ['wanderPatience',           'Patience errance',        1,    '5 ticks'],
-  ['maxVisitDuration',         'Durée de visite max',     10,   'hors spec · 0 = illimité'],
+  ['upkeepMultiplier',         'Entretien',               0.25, 'hors spec · 0 = aucun'],
+  ['priceSensitivity',         'Sensibilité au prix',     0.01, 'hors spec · 0 = aucune'],
+  ['maxVisitDuration',         'Durée de visite max',     10,   'hors spec · 0 = illimitée'],
+  ['marketingBoost',           'Boost campagne',          0.1,  'hors spec · ×1.8'],
+  ['marketingDuration',        'Durée campagne',          10,   'hors spec · 60 ticks'],
+  ['marketingCost',            'Coût campagne',           100,  'hors spec · 1 500 €'],
 ];
 
 /* ---------- Traits de visiteur -------------------------------------------- */
 const TRAITS = {
   sensationsFortes: {
-    label: 'Sensations fortes', short: 'Sensations',
+    label: 'Sensations fortes',
     affinity: { thrill: 1.0, family: 0.3, food: 0.5 },
     queueTolerance: 8, color: '#ff6b5e',
   },
   familial: {
-    label: 'Familial', short: 'Familial',
+    label: 'Familial',
     affinity: { family: 1.0, thrill: 0.2, food: 0.6 },
     queueTolerance: 3, color: '#6ea8ff',
   },
   gourmand: {
-    label: 'Gourmand', short: 'Gourmand',
+    label: 'Gourmand',
     affinity: { food: 1.0, thrill: 0.4, family: 0.5 },
     queueTolerance: 5, color: '#ffc857',
   },
@@ -348,18 +446,50 @@ const TRAIT_KEYS = Object.keys(TRAITS);
 
 /* ---------- Types d'attraction -------------------------------------------- */
 const CATEGORY_COLOR = { thrill: '#ff6b5e', family: '#6ea8ff', food: '#ffc857' };
+const CATEGORY_LABEL = { thrill: 'Sensations', family: 'Familial', food: 'Restauration' };
 
+// `outdoor: false` = déjà couverte, donc insensible à la pluie (règle de la spec).
 const BLUEPRINTS = {
-  carrousel: { name: 'Carrousel',           category: 'family', outdoor: true, price: 4, capacity: 6, radius: 3.2, cost: 1200, shape: 'circle' },
-  coaster:   { name: 'Montagnes russes',    category: 'thrill', outdoor: true, price: 8, capacity: 4, radius: 4.4, cost: 3000, shape: 'coaster' },
-  food:      { name: 'Stand de nourriture', category: 'food',   outdoor: true, price: 5, capacity: 4, radius: 2.6, cost: 600,  shape: 'square' },
+  carrousel:    { name: 'Carrousel',           category: 'family', outdoor: true,  price: 4,  capacity: 6, radius: 3.2, cost: 1200, upkeep: 2.4, shape: 'circle',  capMax: 6 },
+  grandeRoue:   { name: 'Grande roue',         category: 'family', outdoor: true,  price: 6,  capacity: 8, radius: 3.9, cost: 2600, upkeep: 5.0, shape: 'wheel',   capMax: 8 },
+  coaster:      { name: 'Montagnes russes',    category: 'thrill', outdoor: true,  price: 8,  capacity: 4, radius: 4.4, cost: 3000, upkeep: 6.0, shape: 'coaster', capMax: 6 },
+  chuteLibre:   { name: 'Chute libre',         category: 'thrill', outdoor: true,  price: 10, capacity: 3, radius: 2.9, cost: 2400, upkeep: 5.0, shape: 'tower',   capMax: 4 },
+  maisonHantee: { name: 'Maison hantée',       category: 'thrill', outdoor: false, price: 7,  capacity: 5, radius: 3.4, cost: 2800, upkeep: 5.5, shape: 'house',   capMax: 6 },
+  food:         { name: 'Stand de nourriture', category: 'food',   outdoor: true,  price: 5,  capacity: 4, radius: 2.6, cost: 600,  upkeep: 1.2, shape: 'square',  capMax: 6 },
+  glacier:      { name: 'Glacier',             category: 'food',   outdoor: true,  price: 3,  capacity: 3, radius: 2.2, cost: 400,  upkeep: 0.8, shape: 'cone',    capMax: 4 },
+  restaurant:   { name: 'Restaurant',          category: 'food',   outdoor: false, price: 9,  capacity: 6, radius: 3.3, cost: 1800, upkeep: 3.6, shape: 'house',   capMax: 6 },
 };
-const BLUEPRINT_KEYS = Object.keys(BLUEPRINTS);
+const BUILD_GROUPS = [
+  { category: 'family', keys: ['carrousel', 'grandeRoue'] },
+  { category: 'thrill', keys: ['coaster', 'chuteLibre', 'maisonHantee'] },
+  { category: 'food',   keys: ['food', 'glacier', 'restaurant'] },
+];
+const BLUEPRINT_KEYS = BUILD_GROUPS.flatMap((g) => g.keys);
+
+// Améliorations : coût dérivé du prix de construction.
+const UPGRADE = {
+  capacity: { label: 'Agrandir',  step: 2,    rate: 0.35, upkeepAdd: 0.20 },
+  roof:     { label: 'Couvrir',                rate: 0.60, upkeepAdd: 0.30 },
+  renovate: { label: 'Rénover',   bump: 0.20, rate: 0.25, upkeepAdd: 0 },
+};
+const upgradeCost = (a, kind) => Math.round(BLUEPRINTS[a.type].cost * UPGRADE[kind].rate);
 
 /* ---------- Monde --------------------------------------------------------- */
 const WORLD = { w: 100, h: 60, margin: 3 };
 const GATE = { x: 50, y: 57 };
 const SPEED = { travel: 9, wander: 4.5, leave: 11, queue: 5 };
+
+/* ---------- Objectifs ----------------------------------------------------- */
+const GOALS = [
+  { id: 'cats',   label: 'Les 3 catégories représentées',      test: (S) => new Set(S.attractions.map((a) => a.category)).size >= 3 },
+  { id: 'attr6',  label: '6 attractions dans le parc',         test: (S) => S.attractions.length >= 6 },
+  { id: 'roof',   label: 'Une attraction à l’abri de la pluie', test: (S) => S.attractions.some((a) => !a.outdoor) },
+  { id: 'full',   label: 'Parc plein',                         test: (S) => S.visitors.length >= CONFIG.maxVisitors },
+  { id: 'sat',    label: 'Satisfaction moyenne ≥ 0,80',        test: () => { const v = avgSatisfaction(); return v !== null && v >= 0.8; } },
+  { id: 'pop',    label: 'Popularité moyenne ≥ 0,85',          test: () => { const v = avgPopularity(); return v !== null && v >= 0.85; } },
+  { id: 'served', label: '2 000 tours servis',                 test: (S) => S.attractions.reduce((s, a) => s + a.served, 0) >= 2000 },
+  { id: 'money',  label: '40 000 € en caisse',                 test: (S) => S.money >= 40000 },
+];
 
 /* ---------- Aléatoire reproductible --------------------------------------- */
 function mulberry32(a) {
@@ -379,6 +509,7 @@ const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const fmtMoney = (n) => Math.round(n).toLocaleString('fr-FR');
 const fmt1 = (n) => n.toFixed(1);
 const fmt2 = (n) => n.toFixed(2);
+const signed = (n) => (n >= 0 ? '+' : '−') + fmt1(Math.abs(n));
 
 /* ---------- État ---------------------------------------------------------- */
 let state = null;
@@ -388,13 +519,14 @@ function makeAttraction(typeKey, x, y) {
   const bp = BLUEPRINTS[typeKey];
   return {
     id: nextId++, type: typeKey, name: bp.name, category: bp.category,
-    outdoor: bp.outdoor, price: bp.price, capacity: bp.capacity,
-    radius: bp.radius, shape: bp.shape,
+    outdoor: bp.outdoor, price: bp.price, basePrice: bp.price,
+    capacity: bp.capacity, capacityBonus: 0,
+    upkeep: bp.upkeep, radius: bp.radius, shape: bp.shape,
     x, y,
     popularity: 0.5,      // démarre à 0.5
     queue: 0,             // recalculée à chaque tick
     riders: [],           // visiteurs « dessus » ce tick
-    lastRevenue: 0, totalRevenue: 0, served: 0, builtAt: 0,
+    lastRevenue: 0, totalRevenue: 0, served: 0, builtAt: 0, invested: bp.cost,
   };
 }
 
@@ -409,9 +541,12 @@ function initState(seedValue) {
     visitors: [],
     attractions: [],
     revenueThisTick: 0,
-    totalRevenue: 0,
-    totalSpawned: 0,
-    totalLeft: 0,
+    upkeepThisTick: 0,
+    totalRevenue: 0, totalUpkeep: 0,
+    totalSpawned: 0, totalLeft: 0,
+    marketingTicks: 0,
+    wasBroke: false,
+    goals: {},
     history: [],
     log: [],
     selectedId: null,
@@ -451,6 +586,7 @@ function spawnVisitor() {
     joinTick: 0,
     failedSearches: 0,
     rides: 0, spent: 0, bornTick: state.ticks,
+    slot: null,
     // premier objectif d'errance : le cœur du parc, pour que le visiteur entre
     wander: { x: clamp(c.x + (rng() - 0.5) * 16, WORLD.margin, WORLD.w - WORLD.margin),
               y: clamp(c.y + (rng() - 0.5) * 12, WORLD.margin, WORLD.h - WORLD.margin) },
@@ -470,7 +606,8 @@ function attractionById(id) {
    affinité × popularité
    − 0.08 par visiteur en trop au-delà de la tolérance de file
    − 0.3 si pluie et attraction extérieure
-   − 0.01 × distance                                                        */
+   − 0.01 × distance
+   (hors spec, si activé) − priceSensitivity × (prix − prix de base)          */
 function destinationScore(v, a) {
   const trait = TRAITS[v.trait];
   const aff = trait.affinity[a.category] || 0;
@@ -479,6 +616,7 @@ function destinationScore(v, a) {
   s -= CONFIG.queueScorePenalty * excess;
   if (state.weather === 'rain' && a.outdoor) s -= CONFIG.rainScorePenalty;
   s -= CONFIG.distancePenalty * dist(v, a);
+  if (CONFIG.priceSensitivity) s -= CONFIG.priceSensitivity * (a.price - a.basePrice);
   return s;
 }
 
@@ -500,6 +638,7 @@ function satisfactionTarget(v, a) {
   const excess = Math.max(0, a.queue - trait.queueTolerance);
   let t = aff - CONFIG.queueSatisfactionPenalty * excess;
   if (state.weather === 'rain' && a.outdoor) t -= CONFIG.rainSatisfactionPenalty;
+  if (CONFIG.priceSensitivity) t -= CONFIG.priceSensitivity * (a.price - a.basePrice);
   return clamp01(t);
 }
 
@@ -513,7 +652,6 @@ function moveToward(v, tx, ty, speed) {
 
 function newWanderTarget(v) {
   const c = parkCentroid();
-  // errance biaisée vers le cœur du parc pour rester lisible à l'écran
   const bx = v.x + (c.x - v.x) * 0.35, by = v.y + (c.y - v.y) * 0.35;
   v.wander = {
     x: clamp(bx + (rng() - 0.5) * 26, WORLD.margin, WORLD.w - WORLD.margin),
@@ -537,13 +675,14 @@ function riderSlot(a, i, n) {
 function leaveVisitor(v, reason) {
   v.mode = 'leaving';
   v.targetId = null;
+  v.slot = null;
   v.leaveReason = reason;
 }
 
 /* =============================================================================
    BOUCLE DE SIMULATION — un tick = 1,5 s en vitesse normale
    1. spawn  2. les visiteurs agissent  3. recalcul des files
-   4. revenu  5. dérive de popularité   6. météo
+   4. revenu (− entretien)  5. dérive de popularité  6. météo
    ========================================================================== */
 function tick() {
   state.ticks++;
@@ -552,7 +691,8 @@ function tick() {
   /* --- 1. Spawn ---------------------------------------------------------- */
   const avgPop = state.attractions.length
     ? state.attractions.reduce((s, a) => s + a.popularity, 0) / state.attractions.length : 0;
-  const spawnP = CONFIG.spawnBase * (0.5 + avgPop);
+  let spawnP = CONFIG.spawnBase * (0.5 + avgPop);
+  if (state.marketingTicks > 0) spawnP *= CONFIG.marketingBoost; // hors spec
   if (state.visitors.length < CONFIG.maxVisitors && rng() < spawnP) spawnVisitor();
 
   /* --- 2a. Les visiteurs « dessus » au tick précédent redescendent -------- */
@@ -606,7 +746,6 @@ function tick() {
       case 'queueing': {
         const a = attractionById(v.targetId);
         if (!a) { v.mode = 'wandering'; v.targetId = null; newWanderTarget(v); break; }
-        // se range dans la file ; la position exacte est fixée au recalcul (étape 3)
         if (v.slot) moveToward(v, v.slot.x, v.slot.y, SPEED.queue);
         break;
       }
@@ -636,8 +775,7 @@ function tick() {
     let boarded = 0;
     for (const v of list) {
       if (boarded >= a.capacity) break;
-      // il faut être arrivé physiquement pour embarquer
-      if (dist(v, a) > a.radius + 5) continue;
+      if (dist(v, a) > a.radius + 5) continue; // il faut être arrivé physiquement
       v.mode = 'riding';
       a.riders.push(v);
       boarded++;
@@ -696,6 +834,21 @@ function tick() {
   state.money += state.revenueThisTick;
   state.totalRevenue += state.revenueThisTick;
 
+  // hors spec : entretien, pour que construire engage à quelque chose
+  state.upkeepThisTick = 0;
+  if (CONFIG.upkeepMultiplier > 0) {
+    for (const a of state.attractions) state.upkeepThisTick += a.upkeep;
+    state.upkeepThisTick *= CONFIG.upkeepMultiplier;
+    state.money -= state.upkeepThisTick;
+    state.totalUpkeep += state.upkeepThisTick;
+  }
+  if (state.money < 0 && !state.wasBroke) {
+    state.wasBroke = true;
+    logEvent('<b>Caisse dans le rouge</b> — démolissez ou baissez l’entretien');
+  } else if (state.money >= 0 && state.wasBroke) {
+    state.wasBroke = false;
+  }
+
   /* --- 5. Dérive de popularité (bouche-à-oreille, 2 %/tick) --------------- */
   for (const a of state.attractions) {
     if (!a.riders.length) continue;
@@ -712,13 +865,32 @@ function tick() {
     logEvent(state.weather === 'rain' ? 'La pluie arrive ☔' : 'Le soleil revient ☀');
   }
 
+  if (state.marketingTicks > 0) {
+    state.marketingTicks--;
+    if (state.marketingTicks === 0) logEvent('Fin de la campagne marketing');
+  }
+
+  checkGoals();
   recordHistory();
+}
+
+function checkGoals() {
+  for (const g of GOALS) {
+    if (state.goals[g.id]) continue;
+    if (g.test(state)) {
+      state.goals[g.id] = state.ticks;
+      logEvent('<b>Objectif atteint</b> — ' + g.label);
+    }
+  }
 }
 
 function recordHistory() {
   const vis = state.visitors.length;
   const sat = vis ? state.visitors.reduce((s, v) => s + v.satisfaction, 0) / vis : 0;
-  state.history.push({ t: state.ticks, visitors: vis, revenue: state.revenueThisTick, sat, rain: state.weather === 'rain' });
+  state.history.push({
+    t: state.ticks, visitors: vis, net: state.revenueThisTick - state.upkeepThisTick,
+    sat, rain: state.weather === 'rain',
+  });
   if (state.history.length > 420) state.history.shift();
 }
 
@@ -732,6 +904,111 @@ function avgPopularity() {
 }
 
 /* =============================================================================
+   ACTIONS DU JOUEUR
+   ========================================================================== */
+function canPlace(x, y, key, ignoreId) {
+  const bp = BLUEPRINTS[key];
+  const m = WORLD.margin + bp.radius;
+  if (x < m || x > WORLD.w - m || y < m || y > WORLD.h - m) return false;
+  if (Math.abs(x - GATE.x) < 8 && Math.abs(y - GATE.y) < 5) return false; // ne pas boucher l'entrée
+  for (const a of state.attractions) {
+    if (a.id === ignoreId) continue;
+    if (dist({ x, y }, a) < a.radius + bp.radius + 2) return false;
+  }
+  return true;
+}
+
+function placeAttraction(x, y) {
+  const bp = BLUEPRINTS[buildType];
+  if (state.money < bp.cost) { flashHint('Fonds insuffisants pour ' + bp.name + '.'); return; }
+  if (!canPlace(x, y, buildType)) { flashHint('Emplacement invalide (bord, entrée ou attraction trop proche).'); return; }
+  const a = makeAttraction(buildType, x, y);
+  a.builtAt = state.ticks;
+  state.attractions.push(a);
+  state.money -= bp.cost;
+  logEvent(bp.name + ' construit (−' + fmtMoney(bp.cost) + ' €)' + proximityNote(a));
+  state.selectedId = a.id;
+  renderPanels();
+}
+
+function proximityNote(a) {
+  let n = 0;
+  for (const b of state.attractions) {
+    if (b === a) continue;
+    if (dist(a, b) < CONFIG.foodBonusRadius && ((a.category === 'food') !== (b.category === 'food'))) n++;
+  }
+  return n ? ' · ' + n + ' voisin(s) dans le rayon du bonus' : '';
+}
+
+function removeAttraction(id) {
+  const idx = state.attractions.findIndex((a) => a.id === id);
+  if (idx < 0) return;
+  const a = state.attractions[idx];
+  for (const v of state.visitors) {
+    if (v.targetId === a.id) { v.targetId = null; v.mode = 'wandering'; v.slot = null; newWanderTarget(v); }
+  }
+  state.attractions.splice(idx, 1);
+  const refund = Math.round(a.invested * 0.5);
+  state.money += refund;
+  if (state.selectedId === id) state.selectedId = null;
+  logEvent(a.name + ' démoli (+' + fmtMoney(refund) + ' € remboursés)');
+  renderPanels();
+}
+
+function upgradeCapacity(a) {
+  const cost = upgradeCost(a, 'capacity');
+  const bp = BLUEPRINTS[a.type];
+  if (a.capacityBonus >= bp.capMax) { flashHint(a.name + ' est déjà au maximum.'); return; }
+  if (state.money < cost) { flashHint('Il faut ' + fmtMoney(cost) + ' € pour agrandir.'); return; }
+  state.money -= cost;
+  a.capacity += UPGRADE.capacity.step;
+  a.capacityBonus += UPGRADE.capacity.step;
+  a.upkeep += bp.upkeep * UPGRADE.capacity.upkeepAdd;
+  a.invested += cost;
+  logEvent(a.name + ' agrandi → ' + a.capacity + ' places (−' + fmtMoney(cost) + ' €)');
+  renderPanels();
+}
+
+function buildRoof(a) {
+  if (!a.outdoor) { flashHint(a.name + ' est déjà couverte.'); return; }
+  const cost = upgradeCost(a, 'roof');
+  const bp = BLUEPRINTS[a.type];
+  if (state.money < cost) { flashHint('Il faut ' + fmtMoney(cost) + ' € pour couvrir.'); return; }
+  state.money -= cost;
+  a.outdoor = false;
+  a.upkeep += bp.upkeep * UPGRADE.roof.upkeepAdd;
+  a.invested += cost;
+  logEvent(a.name + ' couverte — plus de pénalité de pluie (−' + fmtMoney(cost) + ' €)');
+  renderPanels();
+}
+
+function renovate(a) {
+  const cost = upgradeCost(a, 'renovate');
+  if (state.money < cost) { flashHint('Il faut ' + fmtMoney(cost) + ' € pour rénover.'); return; }
+  state.money -= cost;
+  a.popularity = clamp01(a.popularity + UPGRADE.renovate.bump);
+  a.invested += cost;
+  logEvent(a.name + ' rénovée → popularité ' + fmt2(a.popularity) + ' (−' + fmtMoney(cost) + ' €)');
+  renderPanels();
+}
+
+function changePrice(a, delta) {
+  const next = clamp(a.price + delta, 1, Math.round(a.basePrice * 3));
+  if (next === a.price) return;
+  a.price = next;
+  renderPanels();
+}
+
+function launchMarketing() {
+  if (state.marketingTicks > 0) { flashHint('Une campagne est déjà en cours.'); return; }
+  if (state.money < CONFIG.marketingCost) { flashHint('Il faut ' + fmtMoney(CONFIG.marketingCost) + ' € pour lancer une campagne.'); return; }
+  state.money -= CONFIG.marketingCost;
+  state.marketingTicks = CONFIG.marketingDuration;
+  logEvent('Campagne marketing lancée — spawn ×' + CONFIG.marketingBoost + ' pendant ' + CONFIG.marketingDuration + ' ticks');
+  renderPanels();
+}
+
+/* =============================================================================
    RENDU — vue du dessus simplifiée (aucun asset, tout en canvas 2D)
    ========================================================================== */
 const canvas = document.getElementById('park');
@@ -739,11 +1016,8 @@ const ctx = canvas.getContext('2d');
 let view = { scale: 6, ox: 0, oy: 0, w: 0, h: 0 };
 
 const STATE_COLORS = {
-  wandering: '#94a3b8',
-  traveling: '#38bdf8',
-  queueing:  '#fbbf24',
-  riding:    '#4ade80',
-  leaving:   '#f87171',
+  wandering: '#94a3b8', traveling: '#38bdf8', queueing: '#fbbf24',
+  riding: '#4ade80', leaving: '#f87171',
 };
 const STATE_LABELS = {
   wandering: 'errance', traveling: 'en route', queueing: 'file d’attente',
@@ -769,11 +1043,14 @@ function toWorld(clientX, clientY) {
   const r = canvas.getBoundingClientRect();
   return { x: (clientX - r.left - view.ox) / view.scale, y: (clientY - r.top - view.oy) / view.scale };
 }
+function attractionAt(p) {
+  let hit = null;
+  for (const a of state.attractions) if (dist(p, a) <= a.radius * 1.25) hit = a;
+  return hit;
+}
 
 function satColor(s) {
-  // rouge → ambre → vert
-  const h = 0 + clamp01(s) * 130;
-  return 'hsl(' + h.toFixed(0) + ' 75% 58%)';
+  return 'hsl(' + (clamp01(s) * 130).toFixed(0) + ' 75% 58%)';
 }
 
 function drawGround() {
@@ -790,7 +1067,6 @@ function drawGround() {
   ctx.strokeStyle = 'rgba(255,255,255,.09)';
   ctx.strokeRect(sx(0), sy(0), su(WORLD.w), su(WORLD.h));
 
-  // entrée du parc
   ctx.fillStyle = '#243244';
   ctx.fillRect(sx(GATE.x - 5), sy(GATE.y - 1.4), su(10), su(2.8));
   ctx.fillStyle = '#7f8ea3';
@@ -823,10 +1099,26 @@ function drawProximityLinks() {
 
 function attractionPath(shape, cx, cy, r) {
   ctx.beginPath();
-  if (shape === 'circle') {
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  if (shape === 'circle' || shape === 'wheel') {
+    ctx.arc(cx, cy, r * (shape === 'wheel' ? 0.95 : 1), 0, Math.PI * 2);
   } else if (shape === 'square') {
     ctx.rect(cx - r * 0.72, cy - r * 0.72, r * 1.44, r * 1.44);
+  } else if (shape === 'tower') {
+    const w = r * 0.42, h = r * 0.95;
+    ctx.rect(cx - w, cy - h, w * 2, h * 2);
+  } else if (shape === 'house') {
+    const w = r * 0.82, h = r * 0.8;
+    ctx.moveTo(cx - w, cy + h);
+    ctx.lineTo(cx - w, cy - h * 0.25);
+    ctx.lineTo(cx, cy - h);
+    ctx.lineTo(cx + w, cy - h * 0.25);
+    ctx.lineTo(cx + w, cy + h);
+    ctx.closePath();
+  } else if (shape === 'cone') {
+    ctx.moveTo(cx, cy - r * 0.9);
+    ctx.lineTo(cx + r * 0.75, cy + r * 0.6);
+    ctx.lineTo(cx - r * 0.75, cy + r * 0.6);
+    ctx.closePath();
   } else { // coaster : rectangle arrondi allongé
     const w = r * 0.98, h = r * 0.6, rad = r * 0.24;
     ctx.moveTo(cx - w + rad, cy - h);
@@ -838,11 +1130,42 @@ function attractionPath(shape, cx, cy, r) {
   }
 }
 
+function drawShapeDetails(shape, cx, cy, r, col) {
+  if (shape === 'wheel') {
+    ctx.strokeStyle = col + '99'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const ang = (i / 6) * Math.PI;
+      ctx.moveTo(cx - Math.cos(ang) * r * 0.9, cy - Math.sin(ang) * r * 0.9);
+      ctx.lineTo(cx + Math.cos(ang) * r * 0.9, cy + Math.sin(ang) * r * 0.9);
+    }
+    ctx.stroke();
+  } else if (shape === 'tower') {
+    ctx.strokeStyle = col + '99'; ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(cx - r * 0.42, cy - r * 0.3); ctx.lineTo(cx + r * 0.42, cy - r * 0.3);
+    ctx.stroke();
+  }
+}
+
+// Toit : marque les attractions insensibles à la pluie.
+function drawRoof(cx, cy, r, col) {
+  ctx.strokeStyle = col;
+  ctx.lineWidth = clamp(su(0.28), 1.5, 3);
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  ctx.moveTo(cx - r * 1.0, cy - r * 1.22);
+  ctx.lineTo(cx, cy - r * 1.62);
+  ctx.lineTo(cx + r * 1.0, cy - r * 1.22);
+  ctx.stroke();
+  ctx.lineCap = 'butt';
+}
+
 function drawAttraction(a) {
   const cx = sx(a.x), cy = sy(a.y), r = su(a.radius);
   const col = CATEGORY_COLOR[a.category];
+  const selected = a.id === state.selectedId;
 
-  // anneau de popularité
   const ring = r * 1.15;
   ctx.strokeStyle = 'rgba(255,255,255,.10)';
   ctx.lineWidth = clamp(su(0.32), 2, 4);
@@ -853,29 +1176,38 @@ function drawAttraction(a) {
   ctx.stroke();
 
   attractionPath(a.shape, cx, cy, r);
-  ctx.fillStyle = col + '2e';
+  ctx.fillStyle = col + (a.outdoor ? '2e' : '4a');
   ctx.fill();
-  ctx.strokeStyle = a.id === state.selectedId ? '#ffffff' : col;
-  ctx.lineWidth = a.id === state.selectedId ? 2.5 : 1.6;
+  ctx.strokeStyle = selected ? '#ffffff' : col;
+  ctx.lineWidth = selected ? 2.5 : 1.6;
   ctx.stroke();
+  drawShapeDetails(a.shape, cx, cy, r, col);
+  if (!a.outdoor) drawRoof(cx, cy, r, '#cfd8e3');
 
+  if (selected) {
+    ctx.setLineDash([su(0.6), su(0.6)]);
+    ctx.strokeStyle = 'rgba(255,255,255,.45)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.arc(cx, cy, ring + su(1.2), 0, Math.PI * 2); ctx.stroke();
+    ctx.setLineDash([]);
+  }
 }
 
 function drawAttractionLabel(a) {
   const cx = sx(a.x), cy = sy(a.y), r = su(a.radius);
   const fs = clamp(su(1.2), 9, 12.5);
-  const compact = view.scale < 6; // vue étroite : on garde le nom seul
+  const compact = view.scale < 6;
   const stats = compact ? '' : a.price + ' € · pop ' + fmt2(a.popularity) + ' · file ' + a.queue;
-  const baseline = cy - r * 1.35;
+  const name = (a.outdoor ? '' : '⌂ ') + a.name;
+  const baseline = cy - r * (a.outdoor ? 1.35 : 1.75);
   ctx.textAlign = 'center'; ctx.textBaseline = 'bottom';
 
   ctx.font = '600 ' + fs.toFixed(1) + 'px system-ui, sans-serif';
-  const wName = ctx.measureText(a.name).width;
+  const wName = ctx.measureText(name).width;
   ctx.font = (fs * 0.85).toFixed(1) + 'px ui-monospace, monospace';
   const wStats = stats ? ctx.measureText(stats).width : 0;
   const bw = Math.max(wName, wStats) + 8, bh = (stats ? fs * 2.3 : fs * 1.15) + 5;
 
-  // fond sombre : les étiquettes restent lisibles quand les attractions se touchent
   ctx.fillStyle = 'rgba(10,14,19,.72)';
   ctx.beginPath();
   const bx = cx - bw / 2, by = baseline - bh + 3;
@@ -888,7 +1220,7 @@ function drawAttractionLabel(a) {
   }
   ctx.font = '600 ' + fs.toFixed(1) + 'px system-ui, sans-serif';
   ctx.fillStyle = a.id === state.selectedId ? '#ffffff' : '#e6ebf2';
-  ctx.fillText(a.name, cx, stats ? baseline - fs * 1.15 : baseline);
+  ctx.fillText(name, cx, stats ? baseline - fs * 1.15 : baseline);
 }
 
 function drawVisitor(v, alpha) {
@@ -926,13 +1258,11 @@ function drawWeather(now) {
   ctx.restore();
 }
 
-function drawGhost() {
-  if (!buildType || !ghost) return;
-  const bp = BLUEPRINTS[buildType];
-  const ok = canPlace(ghost.x, ghost.y, buildType) && state.money >= bp.cost;
-  const cx = sx(ghost.x), cy = sy(ghost.y), r = su(bp.radius);
+function drawPlacementPreview(x, y, key, valid, ignoreId) {
+  const bp = BLUEPRINTS[key];
+  const cx = sx(x), cy = sy(y), r = su(bp.radius);
   ctx.save();
-  ctx.globalAlpha = 0.75;
+  ctx.globalAlpha = 0.8;
   if (bp.category === 'food') {
     ctx.setLineDash([su(0.8), su(0.8)]);
     ctx.strokeStyle = 'rgba(255,200,87,.45)';
@@ -940,19 +1270,19 @@ function drawGhost() {
     ctx.beginPath(); ctx.arc(cx, cy, su(CONFIG.foodBonusRadius), 0, Math.PI * 2); ctx.stroke();
     ctx.setLineDash([]);
   }
-  // met en évidence les voisins qui alimenteraient (ou seraient alimentés par) le bonus
   for (const b of state.attractions) {
-    const near = Math.hypot(ghost.x - b.x, ghost.y - b.y) < CONFIG.foodBonusRadius;
-    const pairs = (bp.category === 'food' && b.category !== 'food') || (bp.category !== 'food' && b.category === 'food');
+    if (b.id === ignoreId) continue;
+    const near = Math.hypot(x - b.x, y - b.y) < CONFIG.foodBonusRadius;
+    const pairs = (bp.category === 'food') !== (b.category === 'food');
     if (near && pairs) {
       ctx.strokeStyle = 'rgba(255,200,87,.6)'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(cx, cy); ctx.lineTo(sx(b.x), sy(b.y)); ctx.stroke();
     }
   }
   attractionPath(bp.shape, cx, cy, r);
-  ctx.fillStyle = ok ? CATEGORY_COLOR[bp.category] + '3a' : 'rgba(248,113,113,.25)';
+  ctx.fillStyle = valid ? CATEGORY_COLOR[bp.category] + '3a' : 'rgba(248,113,113,.25)';
   ctx.fill();
-  ctx.strokeStyle = ok ? CATEGORY_COLOR[bp.category] : '#f87171';
+  ctx.strokeStyle = valid ? CATEGORY_COLOR[bp.category] : '#f87171';
   ctx.lineWidth = 2; ctx.stroke();
   ctx.restore();
 }
@@ -966,7 +1296,12 @@ function render(now) {
   const labelled = state.attractions.slice().sort((p, q) => p.y - q.y);
   for (const a of labelled) drawAttractionLabel(a);
   drawWeather(now);
-  drawGhost();
+  if (buildType && ghost) {
+    drawPlacementPreview(ghost.x, ghost.y, buildType,
+      canPlace(ghost.x, ghost.y, buildType) && state.money >= BLUEPRINTS[buildType].cost, null);
+  } else if (drag && drag.moved) {
+    drawPlacementPreview(drag.a.x, drag.a.y, drag.a.type, drag.valid, drag.a.id);
+  }
 }
 
 /* =============================================================================
@@ -974,7 +1309,9 @@ function render(now) {
    ========================================================================== */
 const el = (id) => document.getElementById(id);
 const hudMoney = el('hudMoney'), hudVisitors = el('hudVisitors'), hudWeather = el('hudWeather'),
-      hudTick = el('hudTick'), hudRev = el('hudRev'), hudSat = el('hudSat'), hudPop = el('hudPop');
+      hudTick = el('hudTick'), hudNet = el('hudNet'), hudNetK = el('hudNetK'),
+      hudSat = el('hudSat'), hudPop = el('hudPop'),
+      hudPromo = el('hudPromo'), hudPromoV = el('hudPromoV');
 const showLinksEl = el('showLinks');
 const stage = el('stage');
 const overlayHint = el('overlayHint');
@@ -984,13 +1321,12 @@ const chart = el('chart'), cctx = chart.getContext('2d');
 let dotMode = 'state';
 let buildType = null;
 let ghost = null;
+let drag = null;
 
 /* ---------- Vitesse ------------------------------------------------------- */
 const SPEEDS = [
-  { label: 'Pause',  mult: 0 },
-  { label: 'Normal', mult: 1 },
-  { label: '×2',     mult: 2 },
-  { label: 'Rapide ×4', mult: 4 },
+  { label: 'Pause', mult: 0 }, { label: 'Normal', mult: 1 },
+  { label: '×2', mult: 2 }, { label: 'Rapide ×4', mult: 4 },
 ];
 let speedMultiplier = 1;
 const BASE_TICK_MS = 1500;
@@ -1016,21 +1352,61 @@ function syncSpeedButtons() {
   });
 }
 
+/* ---------- Presets de règles --------------------------------------------- */
+function buildPresetRow() {
+  const row = el('presetRow');
+  row.innerHTML = '';
+  for (const key of Object.keys(PRESETS)) {
+    const b = document.createElement('button');
+    b.textContent = PRESETS[key].label;
+    b.dataset.preset = key;
+    b.className = 'wide';
+    b.addEventListener('click', () => applyPreset(key));
+    row.appendChild(b);
+  }
+  syncPreset();
+}
+function applyPreset(key) {
+  presetKey = key;
+  Object.assign(CONFIG, SPEC, PRESETS[key].config);
+  el('tuneGrid').querySelectorAll('input').forEach((i) => { i.value = String(CONFIG[i.dataset.key]); });
+  logEvent('Règles : <b>' + PRESETS[key].label + '</b>');
+  syncPreset();
+  renderPanels();
+}
+function syncPreset() {
+  el('presetRow').querySelectorAll('button').forEach((b) => {
+    b.classList.toggle('active', b.dataset.preset === presetKey);
+  });
+  el('presetNote').innerHTML = PRESETS[presetKey].note;
+}
+
 /* ---------- Construction -------------------------------------------------- */
 function buildRowInit() {
   const row = el('buildRow');
   row.innerHTML = '';
-  BLUEPRINT_KEYS.forEach((key, i) => {
-    const bp = BLUEPRINTS[key];
-    const b = document.createElement('button');
-    b.className = 'build';
-    b.dataset.type = key;
-    b.innerHTML = '<span class="sw" style="background:' + CATEGORY_COLOR[bp.category] + '"></span>' +
-      '<span class="nm">' + (i + 1) + '. ' + bp.name + '</span>' +
-      '<span class="pr">' + fmtMoney(bp.cost) + ' € · ' + bp.price + ' €/tour</span>';
-    b.addEventListener('click', () => selectBuild(buildType === key ? null : key));
-    row.appendChild(b);
-  });
+  let index = 0;
+  for (const group of BUILD_GROUPS) {
+    const h = document.createElement('div');
+    h.className = 'group-label';
+    h.textContent = CATEGORY_LABEL[group.category];
+    row.appendChild(h);
+    for (const key of group.keys) {
+      const bp = BLUEPRINTS[key];
+      index++;
+      const b = document.createElement('button');
+      b.className = 'build';
+      b.dataset.type = key;
+      b.title = bp.name + ' — ' + bp.capacity + ' places, entretien ' + fmt1(bp.upkeep) +
+        ' €/tick' + (bp.outdoor ? ', extérieur' : ', couvert (insensible à la pluie)');
+      b.innerHTML = '<span class="sw" style="background:' + CATEGORY_COLOR[bp.category] + '"></span>' +
+        '<span class="nm">' + index + '. ' + bp.name +
+        (bp.outdoor ? '' : ' <span class="roofed">⌂</span>') + '</span>' +
+        '<span class="pr">' + fmtMoney(bp.cost) + ' € · ' + bp.price + ' €/tour</span>';
+      b.addEventListener('click', () => selectBuild(buildType === key ? null : key));
+      row.appendChild(b);
+    }
+  }
   syncBuildButtons();
 }
 function selectBuild(key) {
@@ -1042,61 +1418,16 @@ function selectBuild(key) {
 }
 function syncBuildButtons() {
   el('buildRow').querySelectorAll('button').forEach((b) => {
-    const bp = BLUEPRINTS[b.dataset.type];
     b.classList.toggle('active', b.dataset.type === buildType);
-    b.disabled = state ? state.money < bp.cost : false;
+    b.disabled = state ? state.money < BLUEPRINTS[b.dataset.type].cost : false;
   });
-}
-
-function canPlace(x, y, key) {
-  const bp = BLUEPRINTS[key];
-  const m = WORLD.margin + bp.radius;
-  if (x < m || x > WORLD.w - m || y < m || y > WORLD.h - m) return false;
-  if (Math.abs(x - GATE.x) < 8 && Math.abs(y - GATE.y) < 5) return false; // ne pas boucher l'entrée
-  for (const a of state.attractions) {
-    if (dist({ x, y }, a) < a.radius + bp.radius + 2) return false;
-  }
-  return true;
-}
-
-function placeAttraction(x, y) {
-  const bp = BLUEPRINTS[buildType];
-  if (state.money < bp.cost) { flashHint('Fonds insuffisants.'); return; }
-  if (!canPlace(x, y, buildType)) { flashHint('Emplacement invalide (bord, entrée ou attraction trop proche).'); return; }
-  const a = makeAttraction(buildType, x, y);
-  a.builtAt = state.ticks;
-  state.attractions.push(a);
-  state.money -= bp.cost;
-  let near = 0;
-  for (const b of state.attractions) {
-    if (b === a) continue;
-    if (dist(a, b) < CONFIG.foodBonusRadius && ((a.category === 'food') !== (b.category === 'food'))) near++;
-  }
-  logEvent(bp.name + ' construit (−' + fmtMoney(bp.cost) + ' €)' + (near ? ' · ' + near + ' voisin(s) dans le rayon du bonus' : ''));
-  syncBuildButtons();
-  renderPanels();
-}
-
-function removeAttraction(id) {
-  const idx = state.attractions.findIndex((a) => a.id === id);
-  if (idx < 0) return;
-  const a = state.attractions[idx];
-  for (const v of state.visitors) {
-    if (v.targetId === a.id) { v.targetId = null; v.mode = 'wandering'; v.slot = null; newWanderTarget(v); }
-  }
-  state.attractions.splice(idx, 1);
-  const refund = Math.round(BLUEPRINTS[a.type].cost * 0.5);
-  state.money += refund;
-  if (state.selectedId === id) state.selectedId = null;
-  logEvent(a.name + ' démoli (+' + fmtMoney(refund) + ' € remboursés)');
-  renderPanels();
 }
 
 let hintTimer = 0;
 function flashHint(msg) {
   overlayHint.innerHTML = '<b>' + msg + '</b>';
   clearTimeout(hintTimer);
-  hintTimer = setTimeout(updateHint, 2200);
+  hintTimer = setTimeout(updateHint, 2400);
 }
 function updateHint() {
   if (buildType) {
@@ -1106,10 +1437,109 @@ function updateHint() {
       (bp.category === 'food'
         ? ' Le cercle montre le rayon de ' + CONFIG.foodBonusRadius + ' u. du bonus de proximité.'
         : ' Les traits jaunes indiquent les stands qui profiteraient de sa file.');
+  } else if (state && state.selectedId) {
+    overlayHint.innerHTML = 'Glissez l’attraction pour la déplacer · le panneau de droite ' +
+      'permet de l’agrandir, la couvrir, la rénover ou changer son prix.';
   } else {
-    overlayHint.innerHTML = 'Choisissez une attraction dans le panneau puis cliquez sur le parc. ' +
-      'Cliquez une attraction existante pour la sélectionner.';
+    overlayHint.innerHTML = 'Cliquez une attraction pour l’améliorer, glissez-la pour la déplacer, ' +
+      'ou choisissez un type à construire dans le panneau.';
   }
+}
+
+/* ---------- Inspecteur ---------------------------------------------------- */
+let inspectorId = null;
+let inspRefs = null;
+
+function buildInspector(a) {
+  const card = el('inspector');
+  card.innerHTML =
+    '<div class="insp-head">' +
+      '<span class="sw" style="background:' + CATEGORY_COLOR[a.category] + '"></span>' +
+      '<span class="nm">' + a.name + '</span>' +
+      '<span class="tag" data-r="tag"></span>' +
+    '</div>' +
+    '<div class="insp-grid">' +
+      '<div class="cell"><span class="lb">Popularité</span><span class="vl" data-r="pop"></span></div>' +
+      '<div class="cell"><span class="lb">File</span><span class="vl" data-r="queue"></span></div>' +
+      '<div class="cell"><span class="lb">Revenu / tick</span><span class="vl" data-r="rev"></span></div>' +
+      '<div class="cell"><span class="lb">Entretien</span><span class="vl" data-r="upk"></span></div>' +
+      '<div class="cell"><span class="lb">Tours servis</span><span class="vl" data-r="served"></span></div>' +
+      '<div class="cell"><span class="lb">Total encaissé</span><span class="vl" data-r="total"></span></div>' +
+    '</div>' +
+    '<div class="insp-act">' +
+      '<div class="line"><span class="t">Prix du tour<small data-r="pricehint"></small></span>' +
+        '<button class="mini" data-act="price-">−1 €</button>' +
+        '<span class="vl" data-r="price" style="min-width:38px;text-align:right"></span>' +
+        '<button class="mini" data-act="price+">+1 €</button></div>' +
+      '<div class="line"><span class="t">Capacité<small data-r="caphint"></small></span>' +
+        '<button class="mini" data-act="cap"></button></div>' +
+      '<div class="line"><span class="t">Toit<small data-r="roofhint"></small></span>' +
+        '<button class="mini" data-act="roof"></button></div>' +
+      '<div class="line"><span class="t">Rénovation<small>+' + fmt2(UPGRADE.renovate.bump) +
+        ' de popularité, immédiat</small></span>' +
+        '<button class="mini" data-act="reno"></button></div>' +
+      '<div class="line" style="margin-top:2px">' +
+        '<span class="t">Investi : <span data-r="invested"></span></span>' +
+        '<button class="mini danger" data-act="del">Démolir</button></div>' +
+    '</div>';
+
+  inspRefs = {};
+  card.querySelectorAll('[data-r]').forEach((n) => { inspRefs[n.dataset.r] = n; });
+  card.querySelectorAll('[data-act]').forEach((b) => { inspRefs['btn-' + b.dataset.act] = b; });
+
+  card.onclick = (e) => {
+    const act = e.target.dataset && e.target.dataset.act;
+    if (!act) return;
+    const cur = state.attractions.find((x) => x.id === state.selectedId);
+    if (!cur) return;
+    if (act === 'price+') changePrice(cur, 1);
+    else if (act === 'price-') changePrice(cur, -1);
+    else if (act === 'cap') upgradeCapacity(cur);
+    else if (act === 'roof') buildRoof(cur);
+    else if (act === 'reno') renovate(cur);
+    else if (act === 'del') removeAttraction(cur.id);
+  };
+  card.hidden = false;
+}
+
+function renderInspector() {
+  const card = el('inspector');
+  const a = state.attractions.find((x) => x.id === state.selectedId);
+  if (!a) { card.hidden = true; inspectorId = null; return; }
+  if (inspectorId !== a.id) { inspectorId = a.id; buildInspector(a); }
+  const bp = BLUEPRINTS[a.type];
+  const r = inspRefs;
+
+  r.tag.textContent = CATEGORY_LABEL[a.category] + (a.outdoor ? ' · extérieur' : ' · couvert');
+  r.pop.textContent = fmt2(a.popularity);
+  r.queue.textContent = a.queue + ' en file · ' + a.riders.length + '/' + a.capacity + ' dessus';
+  r.rev.textContent = fmt1(a.lastRevenue) + ' €';
+  r.upk.textContent = (CONFIG.upkeepMultiplier > 0 ? fmt1(a.upkeep * CONFIG.upkeepMultiplier) + ' €' : 'désactivé');
+  r.served.textContent = String(a.served);
+  r.total.textContent = fmtMoney(a.totalRevenue) + ' €';
+  r.price.textContent = a.price + ' €';
+  r.invested.textContent = fmtMoney(a.invested) + ' €';
+  r.pricehint.textContent = CONFIG.priceSensitivity
+    ? 'base ' + a.basePrice + ' € · chaque € au-dessus coûte ' + fmt2(CONFIG.priceSensitivity) + ' d’attirance'
+    : 'sensibilité au prix désactivée : augmenter est sans risque';
+
+  const capCost = upgradeCost(a, 'capacity');
+  const capMaxed = a.capacityBonus >= bp.capMax;
+  r.caphint.textContent = a.capacity + ' places' + (capMaxed ? ' — maximum atteint' :
+    ' → ' + (a.capacity + UPGRADE.capacity.step) + ', moins d’attente');
+  r['btn-cap'].textContent = capMaxed ? 'Max' : '+2 · ' + fmtMoney(capCost) + ' €';
+  r['btn-cap'].disabled = capMaxed || state.money < capCost;
+
+  const roofCost = upgradeCost(a, 'roof');
+  r.roofhint.textContent = a.outdoor
+    ? 'supprime les pénalités de pluie (−' + fmt2(CONFIG.rainScorePenalty) + ' d’attirance, revenu ×' + CONFIG.rainRevenueMultiplier + ')'
+    : 'déjà couverte : la pluie n’a aucun effet';
+  r['btn-roof'].textContent = a.outdoor ? fmtMoney(roofCost) + ' €' : 'Fait';
+  r['btn-roof'].disabled = !a.outdoor || state.money < roofCost;
+
+  const renoCost = upgradeCost(a, 'renovate');
+  r['btn-reno'].textContent = fmtMoney(renoCost) + ' €';
+  r['btn-reno'].disabled = state.money < renoCost || a.popularity >= 1;
 }
 
 /* ---------- Légende ------------------------------------------------------- */
@@ -1126,17 +1556,25 @@ function renderLegend() {
     '<div class="row"><span class="dot" style="background:' + r[0] + '"></span>' + r[1] + '</div>').join('');
 }
 
-/* ---------- HUD, table, journal, graphe ----------------------------------- */
+/* ---------- HUD, table, objectifs, journal, graphe ------------------------ */
 function renderHUD() {
   hudMoney.textContent = fmtMoney(state.money) + ' €';
+  hudMoney.parentElement.classList.toggle('neg', state.money < 0);
   hudVisitors.textContent = state.visitors.length + ' / ' + CONFIG.maxVisitors;
   hudWeather.textContent = state.weather === 'rain' ? 'Pluie ☔' : 'Soleil ☀';
   hudWeather.parentElement.className = 'chip weather ' + (state.weather === 'rain' ? 'rain' : 'sun');
   hudTick.textContent = String(state.ticks);
-  hudRev.textContent = fmt1(state.revenueThisTick) + ' €';
+  const upkeep = CONFIG.upkeepMultiplier > 0;
+  hudNetK.textContent = upkeep ? 'Net/tick' : 'Rev/tick';
+  hudNet.textContent = signed(state.revenueThisTick - state.upkeepThisTick) + ' €';
+  hudNet.parentElement.title = upkeep
+    ? 'Revenu ' + fmt1(state.revenueThisTick) + ' € − entretien ' + fmt1(state.upkeepThisTick) + ' €'
+    : 'Entretien désactivé';
   const s = avgSatisfaction(), p = avgPopularity();
   hudSat.textContent = s === null ? '—' : fmt2(s);
   hudPop.textContent = p === null ? '—' : fmt2(p);
+  hudPromo.hidden = state.marketingTicks <= 0;
+  hudPromoV.textContent = state.marketingTicks + ' t';
 }
 
 function renderTable() {
@@ -1147,51 +1585,66 @@ function renderTable() {
     if (a.id === state.selectedId) tr.className = 'sel';
     tr.innerHTML =
       '<td><span class="nametd"><span class="sw" style="background:' + CATEGORY_COLOR[a.category] + '"></span>' +
-        '<span class="txt" title="' + a.name + '">' + a.name + '</span></span></td>' +
+        '<span class="txt" title="' + a.name + '">' + (a.outdoor ? '' : '⌂ ') + a.name + '</span></span></td>' +
       '<td>' + a.queue + '</td>' +
       '<td>' + a.riders.length + '/' + a.capacity + '</td>' +
       '<td><span class="bar" title="' + fmt2(a.popularity) + '"><i style="width:' +
         (a.popularity * 100).toFixed(0) + '%;background:' + CATEGORY_COLOR[a.category] + '"></i></span></td>' +
-      '<td>' + fmt1(a.lastRevenue) + '</td>' +
-      '<td><button class="mini" data-del="' + a.id + '" title="Démolir (50 % remboursés)">✕</button></td>';
-    tr.addEventListener('click', (e) => {
-      if (e.target.dataset.del) return;
+      '<td>' + fmt1(a.lastRevenue) + '</td>';
+    tr.addEventListener('click', () => {
       state.selectedId = state.selectedId === a.id ? null : a.id;
-      renderTable();
+      renderPanels(); updateHint();
     });
     tb.appendChild(tr);
   }
-  tb.querySelectorAll('[data-del]').forEach((b) => {
-    b.addEventListener('click', (e) => { e.stopPropagation(); removeAttraction(Number(b.dataset.del)); });
-  });
 
   const note = el('attrNote');
   const a = state.attractions.find((x) => x.id === state.selectedId);
-  if (a) {
-    let bonus = 0, neigh = 0;
-    if (a.category === 'food') {
-      for (const b of state.attractions) {
-        if (b === a || b.category === 'food') continue;
-        if (dist(a, b) < CONFIG.foodBonusRadius) { neigh++; bonus += b.queue; }
-      }
+  if (a && a.category === 'food') {
+    let neigh = 0, bonus = 0;
+    for (const b of state.attractions) {
+      if (b === a || b.category === 'food') continue;
+      if (dist(a, b) < CONFIG.foodBonusRadius) { neigh++; bonus += b.queue; }
     }
-    note.innerHTML = '<b>' + a.name + '</b> — total encaissé ' + fmtMoney(a.totalRevenue) + ' €, ' +
-      a.served + ' tours servis, popularité ' + fmt2(a.popularity) +
-      (a.category === 'food'
-        ? '. Bonus de proximité : ' + neigh + ' voisin(s), files cumulées ' + bonus +
-          ' → +' + fmt1(CONFIG.foodBonusRate * bonus) + ' €/tick.'
-        : '.');
+    note.innerHTML = '<b>Bonus de proximité</b> — ' + neigh + ' voisin(s) non-food à moins de ' +
+      CONFIG.foodBonusRadius + ' u., files cumulées ' + bonus + ' → +' +
+      fmt1(CONFIG.foodBonusRate * bonus) + ' €/tick. Glissez le stand pour tester d’autres emplacements.';
   } else {
     const totals = state.attractions.reduce((s, x) => s + x.totalRevenue, 0);
-    note.innerHTML = 'Total encaissé ' + fmtMoney(totals) + ' € · ' + state.totalSpawned +
-      ' visiteurs entrés · ' + state.totalLeft + ' repartis. Cliquez une ligne pour le détail.';
+    note.innerHTML = 'Encaissé ' + fmtMoney(totals) + ' €' +
+      (state.totalUpkeep ? ', entretien ' + fmtMoney(state.totalUpkeep) + ' €' : '') +
+      ' · ' + state.totalSpawned + ' entrés · ' + state.totalLeft + ' repartis.';
   }
+}
+
+function renderGoals() {
+  const box = el('goals');
+  const done = GOALS.filter((g) => state.goals[g.id]).length;
+  box.innerHTML = GOALS.map((g) => {
+    const at = state.goals[g.id];
+    return '<li class="' + (at ? 'done' : '') + '"><span class="mk">✓</span>' + g.label +
+      (at ? ' <span style="color:var(--dim);font-family:var(--mono);font-size:10px">t' + at + '</span>' : '') + '</li>';
+  }).join('');
+  const h = box.previousElementSibling;
+  if (h && h.tagName === 'H2') h.innerHTML = 'Objectifs <em>' + done + ' / ' + GOALS.length + '</em>';
 }
 
 function renderLog() {
   const box = el('log');
   if (!box) return;
   box.innerHTML = state.log.map((e) => '<div><span class="t">t' + e.t + '</span> ' + e.msg + '</div>').join('');
+}
+
+function renderMarketing() {
+  const b = el('marketingBtn');
+  const active = state.marketingTicks > 0;
+  b.textContent = active
+    ? 'Campagne en cours — ' + state.marketingTicks + ' ticks'
+    : 'Lancer une campagne · ' + fmtMoney(CONFIG.marketingCost) + ' €';
+  b.disabled = active || state.money < CONFIG.marketingCost;
+  el('marketingNote').innerHTML = 'Multiplie le spawn par <b>×' + CONFIG.marketingBoost +
+    '</b> pendant ' + CONFIG.marketingDuration + ' ticks. Utile pour tester le parc à pleine charge — ' +
+    'hors spec, réglable plus bas.';
 }
 
 function renderChart() {
@@ -1209,18 +1662,20 @@ function renderChart() {
   const n = hist.length;
   const X = (i) => (i / (n - 1)) * (w - 2) + 1;
 
-  // bandes de pluie
   cctx.fillStyle = '#3b4f63';
   for (let i = 0; i < n; i++) {
     if (!hist[i].rain) continue;
     cctx.fillRect(X(i), 0, Math.max(1, (w - 2) / (n - 1) + 0.6), h);
   }
-  const maxRev = Math.max(1, ...hist.map((p) => p.revenue));
+  const maxNet = Math.max(1, ...hist.map((p) => Math.abs(p.net)));
   const series = [
     ['#38bdf8', (p) => p.visitors / Math.max(1, CONFIG.maxVisitors)],
-    ['#6ee7b7', (p) => p.revenue / maxRev],
+    ['#6ee7b7', (p) => (p.net / maxNet + 1) / 2],
     ['#ffc857', (p) => p.sat],
   ];
+  // ligne du zéro pour le net
+  cctx.strokeStyle = '#26303d'; cctx.lineWidth = 1;
+  cctx.beginPath(); cctx.moveTo(1, h - 3 - 0.5 * (h - 8)); cctx.lineTo(w - 1, h - 3 - 0.5 * (h - 8)); cctx.stroke();
   for (const [col, f] of series) {
     cctx.strokeStyle = col; cctx.lineWidth = 1.4; cctx.beginPath();
     for (let i = 0; i < n; i++) {
@@ -1232,11 +1687,12 @@ function renderChart() {
   cctx.fillStyle = '#5f6b7d';
   cctx.font = '9px ui-monospace, monospace';
   cctx.textAlign = 'right'; cctx.textBaseline = 'top';
-  cctx.fillText('rev. max ' + fmt1(maxRev) + ' €/t', w - 4, 3);
+  cctx.fillText('net ±' + fmt1(maxNet) + ' €/t', w - 4, 3);
 }
 
 function renderPanels() {
-  renderHUD(); renderTable(); renderChart(); syncBuildButtons();
+  renderHUD(); renderTable(); renderInspector(); renderGoals();
+  renderMarketing(); renderChart(); syncBuildButtons();
 }
 
 /* ---------- Réglages ------------------------------------------------------ */
@@ -1246,7 +1702,7 @@ function buildTuning() {
   for (const [key, label, step, specTxt] of TUNABLES) {
     const lb = document.createElement('div');
     lb.className = 'lb';
-    lb.innerHTML = label + '<small>spec : ' + specTxt + '</small>';
+    lb.innerHTML = label + '<small>' + specTxt + '</small>';
     const inp = document.createElement('input');
     inp.type = 'number'; inp.step = String(step); inp.value = String(CONFIG[key]); inp.dataset.key = key;
     inp.addEventListener('change', () => {
@@ -1259,48 +1715,76 @@ function buildTuning() {
     g.appendChild(lb); g.appendChild(inp);
   }
 }
-function resetTuning() {
-  Object.assign(CONFIG, SPEC);
-  el('tuneGrid').querySelectorAll('input').forEach((i) => { i.value = String(CONFIG[i.dataset.key]); });
-  logEvent('Réglages remis aux valeurs de la spec');
-  renderPanels();
-}
 
-/* ---------- Entrées ------------------------------------------------------- */
-canvas.addEventListener('mousemove', (e) => { if (buildType) ghost = toWorld(e.clientX, e.clientY); });
-canvas.addEventListener('mouseleave', () => { ghost = null; });
-canvas.addEventListener('contextmenu', (e) => { if (buildType) { e.preventDefault(); selectBuild(null); } });
-canvas.addEventListener('click', (e) => {
+/* ---------- Entrées (souris / tactile) ------------------------------------ */
+canvas.addEventListener('pointerdown', (e) => {
+  if (buildType) { ghost = toWorld(e.clientX, e.clientY); return; }
   const p = toWorld(e.clientX, e.clientY);
-  if (buildType) { placeAttraction(p.x, p.y); return; }
-  let hit = null;
-  for (const a of state.attractions) if (dist(p, a) <= a.radius * 1.4) hit = a;
-  state.selectedId = hit ? (state.selectedId === hit.id ? null : hit.id) : null;
-  renderTable();
+  const a = attractionAt(p);
+  if (!a) { state.selectedId = null; renderPanels(); updateHint(); return; }
+  drag = { a, offX: a.x - p.x, offY: a.y - p.y, startX: a.x, startY: a.y, moved: false, valid: true };
+  canvas.setPointerCapture(e.pointerId);
+  stage.classList.add('grabbing');
 });
-canvas.addEventListener('touchstart', (e) => {
-  if (!buildType || !e.touches.length) return;
-  ghost = toWorld(e.touches[0].clientX, e.touches[0].clientY);
-}, { passive: true });
+
+canvas.addEventListener('pointermove', (e) => {
+  const p = toWorld(e.clientX, e.clientY);
+  if (buildType) { ghost = p; return; }
+  if (drag) {
+    const nx = clamp(p.x + drag.offX, 0, WORLD.w), ny = clamp(p.y + drag.offY, 0, WORLD.h);
+    if (!drag.moved && Math.hypot(nx - drag.startX, ny - drag.startY) > 0.4) drag.moved = true;
+    drag.a.x = nx; drag.a.y = ny;
+    drag.valid = canPlace(nx, ny, drag.a.type, drag.a.id);
+    return;
+  }
+  stage.classList.toggle('grabbable', !!attractionAt(p));
+});
+
+canvas.addEventListener('pointerup', (e) => {
+  if (buildType) { const p = toWorld(e.clientX, e.clientY); placeAttraction(p.x, p.y); return; }
+  if (!drag) return;
+  stage.classList.remove('grabbing');
+  const a = drag.a;
+  if (drag.moved) {
+    if (!drag.valid) {
+      a.x = drag.startX; a.y = drag.startY;
+      flashHint('Emplacement invalide — ' + a.name + ' est revenue à sa place.');
+    } else {
+      logEvent(a.name + ' déplacée' + proximityNote(a));
+    }
+  } else {
+    state.selectedId = state.selectedId === a.id ? null : a.id;
+  }
+  drag = null;
+  renderPanels(); updateHint();
+});
+
+canvas.addEventListener('pointercancel', () => {
+  if (drag) { drag.a.x = drag.startX; drag.a.y = drag.startY; drag = null; }
+  stage.classList.remove('grabbing');
+});
+canvas.addEventListener('pointerleave', () => { ghost = null; stage.classList.remove('grabbable'); });
+canvas.addEventListener('contextmenu', (e) => { if (buildType) { e.preventDefault(); selectBuild(null); } });
 
 window.addEventListener('keydown', (e) => {
   if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
   if (e.code === 'Space') { e.preventDefault(); setSpeed(speedMultiplier === 0 ? 1 : 0); }
-  else if (e.key === 'Escape') selectBuild(null);
-  else if (e.key >= '1' && e.key <= String(BLUEPRINT_KEYS.length)) {
+  else if (e.key === 'Escape') { selectBuild(null); state.selectedId = null; renderPanels(); updateHint(); }
+  else if (e.key >= '1' && e.key <= '9') {
     const key = BLUEPRINT_KEYS[Number(e.key) - 1];
-    selectBuild(buildType === key ? null : key);
+    if (key) selectBuild(buildType === key ? null : key);
   }
 });
 
 el('dotMode').addEventListener('change', (e) => { dotMode = e.target.value; renderLegend(); });
-showLinksEl.addEventListener('change', () => {});
+el('marketingBtn').addEventListener('click', launchMarketing);
 el('resetBtn').addEventListener('click', () => {
   const seed = parseInt(el('seed').value, 10) || 0;
   initState(seed);
   selectBuild(null);
+  inspectorId = null;
   el('forceWeather').textContent = 'Forcer la pluie'; // initState remet weatherLocked à false
-  renderPanels(); renderLegend(); renderLog();
+  renderPanels(); renderLegend(); renderLog(); updateHint();
 });
 el('forceWeather').addEventListener('click', () => {
   state.weather = state.weather === 'rain' ? 'sun' : 'rain';
@@ -1310,7 +1794,7 @@ el('forceWeather').addEventListener('click', () => {
     ' (les changements aléatoires sont suspendus)');
   renderHUD();
 });
-el('tuneReset').addEventListener('click', resetTuning);
+el('tuneReset').addEventListener('click', () => applyPreset('spec'));
 window.addEventListener('resize', () => { resizeCanvas(); renderChart(); });
 
 /* ---------- Boucle principale --------------------------------------------- */
@@ -1328,14 +1812,16 @@ function frame(now) {
     }
   }
   uiAccumulator += dt;
-  if (uiAccumulator > 120) { uiAccumulator = 0; renderPanels(); }
+  if (uiAccumulator > 200) { uiAccumulator = 0; renderPanels(); }
   render(now);
   requestAnimationFrame(frame);
 }
 
 /* ---------- Démarrage ----------------------------------------------------- */
+Object.assign(CONFIG, SPEC, PRESETS[presetKey].config);
 initState(parseInt(el('seed').value, 10) || 1337);
 buildSpeedRow();
+buildPresetRow();
 buildRowInit();
 buildTuning();
 renderLegend();
@@ -1347,8 +1833,9 @@ if (window.ResizeObserver) new ResizeObserver(() => { resizeCanvas(); renderChar
 requestAnimationFrame(frame);
 
 // exposé pour le débogage / les scripts de playtest depuis la console
-window.PARK = { get state() { return state; }, CONFIG, SPEC, TRAITS, BLUEPRINTS, tick,
-                setSpeed, initState, destinationScore, satisfactionTarget };
+window.PARK = { get state() { return state; }, CONFIG, SPEC, PRESETS, TRAITS, BLUEPRINTS, GOALS,
+                tick, setSpeed, initState, applyPreset, destinationScore, satisfactionTarget,
+                upgradeCapacity, buildRoof, renovate, changePrice, launchMarketing, removeAttraction };
 </script>
 </body>
 </html>
